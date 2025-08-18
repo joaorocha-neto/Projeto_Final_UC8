@@ -13,7 +13,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 items-center justify-center px-4">
         <View className="bg-blue-700 rounded-xl p-6 mb-8">
           <Text className="text-4xl font-bold text-white text-center">Bora Bill</Text>
