@@ -20,14 +20,14 @@ const AppNavigator: React.FC = () => {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#1f2937',
+            backgroundColor: '#ffffff',
           },
-          headerTintColor: '#ffffff',
+          headerTintColor: '#000000',
           headerTitleStyle: {
             fontWeight: 'bold',
           },
           cardStyle: {
-            backgroundColor: '#000000',
+            backgroundColor: '#ffffff',
           },
         }}
       >
@@ -37,7 +37,7 @@ const AppNavigator: React.FC = () => {
           options={{
             title: 'Bora Bill - Início',
             headerStyle: {
-              backgroundColor: '#1e40af',
+              backgroundColor: '#3b82f6',
             },
           }}
         />
@@ -47,7 +47,7 @@ const AppNavigator: React.FC = () => {
           options={{
             title: 'Meu Perfil',
             headerStyle: {
-              backgroundColor: '#15803d',
+              backgroundColor: '#22c55e',
             },
           }}
         />
@@ -57,7 +57,7 @@ const AppNavigator: React.FC = () => {
           options={{
             title: 'Configurações',
             headerStyle: {
-              backgroundColor: '#7c3aed',
+              backgroundColor: '#a855f7',
             },
           }}
         />

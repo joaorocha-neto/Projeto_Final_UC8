@@ -13,45 +13,34 @@ interface SettingsScreenProps {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
   const [autoSync, setAutoSync] = useState(false);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 px-4 py-6">
-        <View className="bg-purple-700 rounded-xl p-6 mb-8">
+        <View className="bg-purple-500 rounded-xl p-6 mb-8">
           <Text className="text-3xl font-bold text-white text-center">Configurações</Text>
           <Text className="text-lg text-purple-100 text-center mt-2">Personalize seu app</Text>
         </View>
         
-        <View className="bg-gray-800 rounded-lg p-4 mb-6">
-          <View className="flex-row justify-between items-center py-3 border-b border-gray-700">
-            <Text className="text-white text-lg">Notificações</Text>
+        <View className="bg-gray-100 rounded-lg p-4 mb-6 border border-gray-200">
+          <View className="flex-row justify-between items-center py-3 border-b border-gray-300">
+            <Text className="text-gray-800 text-lg">Notificações</Text>
             <Switch
               value={notifications}
               onValueChange={setNotifications}
-              trackColor={{ false: '#374151', true: '#7C3AED' }}
-              thumbColor={notifications ? '#A855F7' : '#9CA3AF'}
-            />
-          </View>
-          
-          <View className="flex-row justify-between items-center py-3 border-b border-gray-700">
-            <Text className="text-white text-lg">Modo Escuro</Text>
-            <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
-              trackColor={{ false: '#374151', true: '#7C3AED' }}
-              thumbColor={darkMode ? '#A855F7' : '#9CA3AF'}
+              trackColor={{ false: '#d1d5db', true: '#a855f7' }}
+              thumbColor={notifications ? '#7c3aed' : '#6b7280'}
             />
           </View>
           
           <View className="flex-row justify-between items-center py-3">
-            <Text className="text-white text-lg">Sincronização Automática</Text>
+            <Text className="text-gray-800 text-lg">Sincronização Automática</Text>
             <Switch
               value={autoSync}
               onValueChange={setAutoSync}
-              trackColor={{ false: '#374151', true: '#7C3AED' }}
-              thumbColor={autoSync ? '#A855F7' : '#9CA3AF'}
+              trackColor={{ false: '#d1d5db', true: '#a855f7' }}
+              thumbColor={autoSync ? '#7c3aed' : '#6b7280'}
             />
           </View>
         </View>
