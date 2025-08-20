@@ -20,7 +20,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       <View className="flex-1 px-4 py-6">
         <View className="bg-blue-700 rounded-xl p-6 mb-8">
           <Text className="text-3xl font-bold text-white text-center">Configurações</Text>
-          <Text className="text-lg text-purple-100 text-center mt-2">Personalize seu app</Text>
+          <Text className="text-lg text-purple-100 text-center mt-2">Opções</Text>
         </View>
         
         <View className="bg-gray-100 rounded-lg p-4 mb-6">
@@ -67,10 +67,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           <TouchableOpacity
             className="bg-red-700 rounded-lg p-4"
             onPress={() => {
-              // Here you could add logout functionality
               console.log('Logout pressed');
+              navigation.navigate('Login')
             }}
           >
+            
             <Text className="text-white text-center font-semibold text-lg">
               Sair do App
             </Text>

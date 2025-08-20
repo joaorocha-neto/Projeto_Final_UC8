@@ -5,8 +5,10 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import RoomsScreen from '../screens/RoomsScreen';
+import LoginScreen from '../screens/LoginScreen';
 
 export type RootStackParamList = {
+  Login: undefined;
   Home: undefined;
   Profile: undefined;
   Rooms: undefined;
@@ -34,31 +36,38 @@ const AppNavigator: React.FC = () => {
         }}
       >
         <Stack.Screen 
+          name="Login" 
+          component={LoginScreen}
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen 
           name="Home" 
           component={HomeScreen}
           options={{
-            title: 'Bora Bill - Início',
+            headerShown: false
           }}
         />
         <Stack.Screen 
           name="Profile" 
           component={ProfileScreen}
           options={{
-            title: 'Meu Perfil',
+            headerShown: false
           }}
         />
         <Stack.Screen 
           name="Rooms" 
           component={RoomsScreen}
           options={{
-            title: 'Salas',
+            headerShown: false
           }}
         />
         <Stack.Screen 
           name="Settings" 
           component={SettingsScreen}
           options={{
-            title: 'Configurações',
+            headerShown: false
           }}
         />
       </Stack.Navigator>
