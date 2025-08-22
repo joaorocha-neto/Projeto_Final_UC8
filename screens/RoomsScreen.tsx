@@ -1,23 +1,24 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { tabRoutes } from '../navigation/tabRoutes';
 
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-
-type RoomsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Rooms'>;
+type RoomsScreenNavigationProp = BottomTabNavigationProp<
+  Record<typeof tabRoutes[number]['name'], undefined>,
+  'Rooms'
+>;
 
 interface RoomsScreenProps {
   navigation: RoomsScreenNavigationProp;
 }
 
-const salas = 
-[
+const salas = [
   { id: 1, nome: 'SmartLabs', capacidade: 30, info: 'Sala equipada com projetor e ar-condicionado.' },
   { id: 2, nome: 'Lab 2', capacidade: 35, info: 'Sala equipada com computadores potentes, projetor e ar-condicionado.' },
-  { id: 3, nome: 'Lab 3', capacidade: 20, info: 'Sala equipada com notbooks fracos, projetor e ar-condicionado.' }, 
+  { id: 3, nome: 'Lab 3', capacidade: 20, info: 'Sala equipada com notebooks fracos, projetor e ar-condicionado.' }, 
   { id: 4, nome: 'Labs', capacidade: 20, info: 'Sala de desenvolvimento.' },
-  { id: 5, nome: 'Auditorio', capacidade: 80, info: 'Sala de apresentação de trabai.' },
+  { id: 5, nome: 'Auditorio', capacidade: 80, info: 'Sala de apresentação de trabalhos.' },
 ];
 
 const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
@@ -48,18 +49,14 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             className="bg-blue-900 rounded-lg p-4 mb-4"
             onPress={() => navigation.navigate('Home')}
           >
-            <Text className="text-white text-center font-semibold text-lg">
-              Voltar ao Início
-            </Text>
+            <Text className="text-white text-center font-semibold text-lg">Voltar ao Início</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
             className="bg-blue-900 rounded-lg p-4"
             onPress={() => navigation.navigate('Settings')}
           >
-            <Text className="text-white text-center font-semibold text-lg">
-              Configurações
-            </Text>
+            <Text className="text-white text-center font-semibold text-lg">Configurações</Text>
           </TouchableOpacity>
         </View>
 

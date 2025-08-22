@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from "../services/authContext";
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { tabRoutes } from '../navigation/tabRoutes';
 
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-
-type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Settings'>;
+type SettingsScreenNavigationProp = BottomTabNavigationProp<
+  Record<typeof tabRoutes[number]['name'], undefined>,
+  'Settings'
+>;
 
 interface SettingsScreenProps {
   navigation: SettingsScreenNavigationProp;
 }
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
+  const { logout } = useAuth();
   const [notifications, setNotifications] = useState(true);
   const [autoSync, setAutoSync] = useState(false);
 
@@ -22,7 +26,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           <Text className="text-3xl font-bold text-white text-center">Configurações</Text>
           <Text className="text-lg text-purple-100 text-center mt-2">Opções</Text>
         </View>
-        
+
         <View className="bg-gray-100 rounded-lg p-4 mb-6">
           <View className="flex-row justify-between items-center py-3 border-b border-gray-300">
             <Text className="text-gray-900 text-lg">Notificações</Text>
@@ -33,7 +37,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               thumbColor={notifications ? '#A855F7' : '#9CA3AF'}
             />
           </View>
-          
+
           <View className="flex-row justify-between items-center py-3">
             <Text className="text-gray-900 text-lg">Sincronização Automática</Text>
             <Switch
@@ -44,37 +48,27 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             />
           </View>
         </View>
-        
+
         <View>
           <TouchableOpacity
             className="bg-blue-900 rounded-lg p-4 mb-4"
             onPress={() => navigation.navigate('Home')}
           >
-            <Text className="text-white text-center font-semibold text-lg">
-              Voltar ao Início
-            </Text>
+            <Text className="text-white text-center font-semibold text-lg">Voltar ao Início</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             className="bg-blue-900 rounded-lg p-4 mb-4"
             onPress={() => navigation.navigate('Profile')}
           >
-            <Text className="text-white text-center font-semibold text-lg">
-              Ver Perfil
-            </Text>
+            <Text className="text-white text-center font-semibold text-lg">Ver Perfil</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             className="bg-red-700 rounded-lg p-4"
-            onPress={() => {
-              console.log('Logout pressed');
-              navigation.navigate('Login')
-            }}
+            onPress={logout}
           >
-            
-            <Text className="text-white text-center font-semibold text-lg">
-              Sair do App
-            </Text>
+            <Text className="text-white text-center font-semibold text-lg">Sair do App</Text>
           </TouchableOpacity>
         </View>
       </View>
