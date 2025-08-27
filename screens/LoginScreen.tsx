@@ -35,13 +35,17 @@ const LoginScreen: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50 justify-center">
-      <View className="shadow-xl bg-white border border-gray-300 rounded-xl py-32 m-8">
-        <Text className="text-gray-800 font-bold text-4xl text-center mb-10">Login</Text>
+      <View className="bg-white border border-gray-300 rounded-xl py-8 mx-8 shadow">
+        <Text className="text-gray-800 font-bold text-2xl text-center mb-8">
+          Login
+        </Text>
 
-        <View>
-          <Text className="mx-5 text-lg font-bold mb-2">Usuário:</Text>
+        <View className="px-5">
+          <Text className="mt-6 mx-5 text-lg font-bold mb-2 text-gray-800">
+            Usuário:
+          </Text>
           <TextInput
-            className="bg-white px-6 mx-5 rounded-xl border border-gray-200 shadow"
+            className="bg-white px-4 py-3 mx-5 rounded-lg border border-gray-200 text-base"
             placeholder="Digite seu usuário..."
             placeholderTextColor="#888"
             onChangeText={setUsername}
@@ -50,9 +54,11 @@ const LoginScreen: React.FC = () => {
             keyboardType="default"
           />
 
-          <Text className="mt-7 mx-5 text-lg font-bold mb-2">Senha:</Text>
+          <Text className="mt-6 mx-5 text-lg font-bold mb-2 text-gray-800">
+            Senha:
+          </Text>
           <TextInput
-            className="bg-white px-6 mx-5 rounded-xl border border-gray-200 shadow"
+            className="bg-white px-4 py-3 mx-5 rounded-lg border border-gray-200 text-base"
             placeholder="Digite sua senha..."
             placeholderTextColor="#888"
             onChangeText={setPassword}
@@ -61,11 +67,12 @@ const LoginScreen: React.FC = () => {
           />
         </View>
 
+        {/* Botão */}
         <TouchableOpacity
           onPress={handleLogin}
-          className="bg-blue-700 px-16 py-3 mt-7 self-center items-center rounded-lg"
+          className="bg-blue-500 px-12 py-3 mt-6 self-center rounded-lg"
         >
-          <Text className="text-white font-bold text-xl">Enviar</Text>
+          <Text className="text-white font-bold text-lg">Enviar</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

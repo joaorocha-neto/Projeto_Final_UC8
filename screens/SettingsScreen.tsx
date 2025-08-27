@@ -16,8 +16,6 @@ interface SettingsScreenProps {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { logout } = useAuth();
-  const [notifications, setNotifications] = useState(true);
-  const [autoSync, setAutoSync] = useState(false);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -28,42 +26,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         </View>
 
         <View className="bg-gray-100 rounded-lg p-4 mb-6">
-          <View className="flex-row justify-between items-center py-3 border-b border-gray-300">
-            <Text className="text-gray-900 text-lg">Notificações</Text>
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: '#374151', true: '#7C3AED' }}
-              thumbColor={notifications ? '#A855F7' : '#9CA3AF'}
-            />
-          </View>
-
-          <View className="flex-row justify-between items-center py-3">
-            <Text className="text-gray-900 text-lg">Sincronização Automática</Text>
-            <Switch
-              value={autoSync}
-              onValueChange={setAutoSync}
-              trackColor={{ false: '#374151', true: '#7C3AED' }}
-              thumbColor={autoSync ? '#A855F7' : '#9CA3AF'}
-            />
-          </View>
+          
         </View>
 
         <View>
-          <TouchableOpacity
-            className="bg-blue-900 rounded-lg p-4 mb-4"
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text className="text-white text-center font-semibold text-lg">Voltar ao Início</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="bg-blue-900 rounded-lg p-4 mb-4"
-            onPress={() => navigation.navigate('Profile')}
-          >
-            <Text className="text-white text-center font-semibold text-lg">Ver Perfil</Text>
-          </TouchableOpacity>
-
+          
           <TouchableOpacity
             className="bg-red-700 rounded-lg p-4"
             onPress={logout}

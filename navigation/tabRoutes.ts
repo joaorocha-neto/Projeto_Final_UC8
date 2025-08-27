@@ -11,7 +11,6 @@ export type TabRoute = {
 
 export const tabRoutes: TabRoute[] = [
   { name: 'Home', component: HomeScreen, label: 'Início' },
-  { name: 'Profile', component: ProfileScreen, label: 'Perfil' },
   { name: 'Rooms', component: RoomsScreen, label: 'Salas' },
   { name: 'Settings', component: SettingsScreen, label: 'Configurações' },
 ];
