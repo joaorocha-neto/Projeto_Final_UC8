@@ -2,17 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from "../services/authContext";
-
-// Mock login function - replace with your actual API call
-async function loginRequest(username: string, password: string) {
-  if (username && password) {
-    return {
-      token: 'mock-token-' + Date.now(),
-      user_data: { username }
-    };
-  }
-  throw new Error('Usuário ou senha inválidos');
-}
+import { login as loginAPI } from "../services/accounts/login";
 
 const LoginScreen: React.FC = () => {
   const { login } = useAuth();
@@ -20,10 +10,21 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
 
   async function handleLogin() {
+    if (!username || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
     try {
-      const data = await loginRequest(username, password);
+      const data = await loginAPI(username, password);
       await login(data.token);
-      Alert.alert('Login realizado!', `Bem-vindo, ${data.user_data.username}`);
+      
+      const userName = data.user_data?.username || 
+                      data.user?.username || 
+                      data.username || 
+                      username;
+      
+      Alert.alert('Login realizado!', `Bem-vindo, ${userName}`);
     } catch (err: unknown) {
       if (err instanceof Error) {
         Alert.alert('Erro', err.message);
@@ -67,7 +68,7 @@ const LoginScreen: React.FC = () => {
           />
         </View>
 
-        {/* Botão */}
+
         <TouchableOpacity
           onPress={handleLogin}
           className="bg-blue-500 px-12 py-3 mt-6 self-center rounded-lg"

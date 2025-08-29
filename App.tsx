@@ -1,4 +1,4 @@
-// App.tsx
+
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';

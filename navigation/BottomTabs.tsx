@@ -30,17 +30,17 @@ const BottomTabs: React.FC = () => {
               </Text>
             ),
             tabBarIcon: ({ color, size }) => {
-              let iconName: keyof typeof Ionicons.glyphMap = "home"; // default
+              let iconName: keyof typeof Ionicons.glyphMap = "home";
 
               switch (route.name) {
                 case "Home":
                   iconName = "home-outline";
                   break;
                 case "Rooms":
-                  iconName = "people-outline";
+                  iconName = "search-outline";
                   break;
                 case "Settings":
-                  iconName = "settings-outline";
+                  iconName = "person-outline";
                   break;
               }
 
