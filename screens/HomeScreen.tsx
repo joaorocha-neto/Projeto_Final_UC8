@@ -40,7 +40,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               Funcionalidades Principais
             </Text>
           </View>
-          
+
           <View className="mb-3">
             <View className="flex-row items-center mb-1">
               <Ionicons name="eye" size={16} color="#374151" />
@@ -97,7 +97,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               Como Usar
             </Text>
           </View>
-          
+
           <View className="mb-3">
             <Text className="text-base font-semibold text-gray-800 mb-1">
               1. Acesse a aba "Salas"
@@ -145,7 +145,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <Text className="text-sm text-gray-600 mb-3">
             Acesse suas informações de perfil, altere sua senha e visualize seu perfil.
           </Text>
-          
+
           <TouchableOpacity
             className="bg-blue-600 rounded-lg p-3"
             onPress={() => navigation.navigate("Settings")}
@@ -166,7 +166,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <Text className="text-sm text-gray-600 mb-3">
             Acesse a seção de salas para começar a gerenciar a limpeza.
           </Text>
-          
+
           <TouchableOpacity
             className="bg-blue-600 rounded-lg p-3"
             onPress={() => navigation.navigate("Rooms")}

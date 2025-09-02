@@ -49,18 +49,18 @@ export async function getSalas(filtros?: {
   try {
     let url = "/salas/";
     const params = new URLSearchParams();
-    
+
     if (filtros?.localizacao) {
       params.append("localizacao", filtros.localizacao);
     }
     if (filtros?.status_limpeza) {
       params.append("status_limpeza", filtros.status_limpeza);
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
+
     const response = await api.get<Sala[]>(url);
     return response.data;
   } catch (error) {
@@ -119,7 +119,7 @@ export async function marcarComoLimpa(id: number, observacoes?: string): Promise
     if (observacoes) {
       data.observacoes = observacoes;
     }
-    
+
     const response = await api.post<LimpezaRegistro>(`/salas/${id}/marcar_como_limpa/`, data);
     return response.data;
   } catch (error) {
@@ -135,7 +135,7 @@ export async function getRegistrosLimpeza(salaId?: number): Promise<LimpezaRegis
     if (salaId) {
       url += `?sala_id=${salaId}`;
     }
-    
+
     const response = await api.get<LimpezaRegistro[]>(url);
     return response.data;
   } catch (error) {

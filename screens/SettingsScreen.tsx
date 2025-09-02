@@ -64,13 +64,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     } catch (error: any) {
       console.error("Erro ao alterar senha:", error);
       let errorMessage = "Erro ao alterar senha";
-      
+
       if (error.response?.data?.old_password) {
         errorMessage = "Senha atual incorreta";
       } else if (error.response?.data?.new_password) {
         errorMessage = "As novas senhas não coincidem";
       }
-      
+
       Alert.alert("Erro", errorMessage);
     } finally {
       setChangingPassword(false);
@@ -150,7 +150,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     Informações Pessoais
                   </Text>
                 </View>
-                
+
                 <View className="items-center mb-4">
                   <View className="bg-blue-600 rounded-full p-3 mb-2">
                     <Ionicons name="person" size={32} color="#ffffff" />
@@ -159,26 +159,26 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     {user.username}
                   </Text>
                   <Text className="text-sm text-gray-600 text-center">
-                    {user.is_superuser ? "Super Administrador" : 
-                     user.is_staff ? "Administrador" : "Usuário Comum"}
+                    {user.is_superuser ? "Super Administrador" :
+                      user.is_staff ? "Administrador" : "Usuário Comum"}
                   </Text>
                 </View>
-                
+
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">Nome de usuário:</Text>
                   <Text className="text-base text-gray-900">{user.username}</Text>
                 </View>
-                
+
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">E-mail:</Text>
                   <Text className="text-base text-gray-900">{user.email || "Não informado"}</Text>
                 </View>
-                
+
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">ID do usuário:</Text>
                   <Text className="text-base text-gray-900">{user.id}</Text>
                 </View>
-                
+
                 {(user.is_staff || user.is_superuser) && (
                   <View className="bg-blue-50 rounded-lg p-3 mt-2">
                     <View className="flex-row items-center">
@@ -200,7 +200,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     Gerenciamento de Usuários
                   </Text>
                 </View>
-                
+
                 <TouchableOpacity
                   className="bg-blue-600 rounded-lg p-3 mb-2"
                   onPress={handleListUsers}
@@ -240,7 +240,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   Segurança
                 </Text>
               </View>
-              
+
               <TouchableOpacity
                 className="bg-blue-600 rounded-lg p-3 mb-2"
                 onPress={() => setShowChangePassword(true)}
@@ -285,7 +285,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   <Ionicons name="close" size={24} color="#6b7280" />
                 </TouchableOpacity>
               </View>
-              
+
               <ScrollView className="bg-white rounded-lg p-2 w-full max-w-sm">
                 {users.map((userItem) => (
                   <View key={userItem.id} className="bg-gray-50 rounded-lg p-3 mb-2">
@@ -296,8 +296,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                       {userItem.email || "Sem e-mail"}
                     </Text>
                     <Text className="text-xs text-gray-500 mt-1">
-                      {userItem.is_superuser ? "Super Administrador" : 
-                       userItem.is_staff ? "Administrador" : "Usuário Comum"}
+                      {userItem.is_superuser ? "Super Administrador" :
+                        userItem.is_staff ? "Administrador" : "Usuário Comum"}
                     </Text>
                   </View>
                 ))}
@@ -317,7 +317,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Criar Novo Usuário
               </Text>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Nome de usuário:
@@ -326,10 +326,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   className="border border-gray-300 rounded-lg p-3 text-base"
                   placeholder="Digite o nome de usuário"
                   value={userData.username}
-                  onChangeText={(text) => setUserData({...userData, username: text})}
+                  onChangeText={(text) => setUserData({ ...userData, username: text })}
                 />
               </View>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   E-mail (opcional):
@@ -338,11 +338,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   className="border border-gray-300 rounded-lg p-3 text-base"
                   placeholder="Digite o e-mail"
                   value={userData.email}
-                  onChangeText={(text) => setUserData({...userData, email: text})}
+                  onChangeText={(text) => setUserData({ ...userData, email: text })}
                   keyboardType="email-address"
                 />
               </View>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Senha:
@@ -352,10 +352,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   placeholder="Digite a senha"
                   secureTextEntry
                   value={userData.password}
-                  onChangeText={(text) => setUserData({...userData, password: text})}
+                  onChangeText={(text) => setUserData({ ...userData, password: text })}
                 />
               </View>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Confirmar senha:
@@ -365,40 +365,40 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   placeholder="Confirme a senha"
                   secureTextEntry
                   value={userData.confirm_password}
-                  onChangeText={(text) => setUserData({...userData, confirm_password: text})}
+                  onChangeText={(text) => setUserData({ ...userData, confirm_password: text })}
                 />
               </View>
-              
+
               <View className="mb-4">
                 <View className="flex-row items-center mb-2">
                   <TouchableOpacity
                     className="flex-row items-center"
-                    onPress={() => setUserData({...userData, is_staff: !userData.is_staff})}
+                    onPress={() => setUserData({ ...userData, is_staff: !userData.is_staff })}
                   >
-                    <Ionicons 
-                      name={userData.is_staff ? "checkbox" : "square-outline"} 
-                      size={20} 
-                      color="#374151" 
+                    <Ionicons
+                      name={userData.is_staff ? "checkbox" : "square-outline"}
+                      size={20}
+                      color="#374151"
                     />
                     <Text className="text-sm text-gray-700 ml-2">Administrador</Text>
                   </TouchableOpacity>
                 </View>
-                
+
                 <View className="flex-row items-center">
                   <TouchableOpacity
                     className="flex-row items-center"
-                    onPress={() => setUserData({...userData, is_superuser: !userData.is_superuser})}
+                    onPress={() => setUserData({ ...userData, is_superuser: !userData.is_superuser })}
                   >
-                    <Ionicons 
-                      name={userData.is_superuser ? "checkbox" : "square-outline"} 
-                      size={20} 
-                      color="#374151" 
+                    <Ionicons
+                      name={userData.is_superuser ? "checkbox" : "square-outline"}
+                      size={20}
+                      color="#374151"
                     />
                     <Text className="text-sm text-gray-700 ml-2">Super Administrador</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-              
+
               <View className="flex-row justify-between">
                 <TouchableOpacity
                   className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
@@ -419,7 +419,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     Cancelar
                   </Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                   className="bg-green-600 rounded-lg p-3 flex-1 ml-2"
                   onPress={handleCreateUser}
@@ -449,7 +449,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Alterar Senha
               </Text>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Senha atual:
@@ -459,12 +459,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   placeholder="Digite sua senha atual"
                   secureTextEntry
                   value={passwordData.old_password}
-                  onChangeText={(text) => 
+                  onChangeText={(text) =>
                     setPasswordData({ ...passwordData, old_password: text })
                   }
                 />
               </View>
-              
+
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Nova senha:
@@ -474,12 +474,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   placeholder="Digite a nova senha"
                   secureTextEntry
                   value={passwordData.new_password}
-                  onChangeText={(text) => 
+                  onChangeText={(text) =>
                     setPasswordData({ ...passwordData, new_password: text })
                   }
                 />
               </View>
-              
+
               <View className="mb-6">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Confirmar nova senha:
@@ -489,12 +489,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   placeholder="Digite novamente a nova senha"
                   secureTextEntry
                   value={passwordData.confirm_new_password}
-                  onChangeText={(text) => 
+                  onChangeText={(text) =>
                     setPasswordData({ ...passwordData, confirm_new_password: text })
                   }
                 />
               </View>
-              
+
               <View className="flex-row justify-between">
                 <TouchableOpacity
                   className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
@@ -512,7 +512,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     Cancelar
                   </Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                   className="bg-blue-700 rounded-lg p-3 flex-1 ml-2"
                   onPress={handleChangePassword}

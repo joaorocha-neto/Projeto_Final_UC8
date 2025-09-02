@@ -9,24 +9,24 @@ export function formatDateTime(utcDateTimeString: string | null): string {
     }
 
     let date: Date;
-    
+
     try {
       date = new Date(utcDateTimeString);
-      
+
       if (isNaN(date.getTime())) {
         date = new Date(utcDateTimeString + 'Z');
       }
-      
+
       if (isNaN(date.getTime())) {
         const cleanString = utcDateTimeString.replace(/[^\d\-:T.]/g, '');
         date = new Date(cleanString);
       }
-      
+
       if (isNaN(date.getTime()) && utcDateTimeString.includes('T')) {
         const isoString = utcDateTimeString.replace('T', ' ').split('.')[0];
         date = new Date(isoString + ' UTC');
       }
-      
+
     } catch (parseError) {
       date = new Date(utcDateTimeString);
     }
@@ -42,7 +42,7 @@ export function formatDateTime(utcDateTimeString: string | null): string {
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
   } catch (error) {
     return "Data inválida";
   }

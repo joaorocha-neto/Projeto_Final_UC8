@@ -18,12 +18,12 @@ const LoginScreen: React.FC = () => {
     try {
       const data = await loginAPI(username, password);
       await login(data.token);
-      
-      const userName = data.user_data?.username || 
-                      data.user?.username || 
-                      data.username || 
-                      username;
-      
+
+      const userName = data.user_data?.username ||
+        data.user?.username ||
+        data.username ||
+        username;
+
       Alert.alert('Login realizado!', `Bem-vindo, ${userName}`);
     } catch (err: unknown) {
       if (err instanceof Error) {

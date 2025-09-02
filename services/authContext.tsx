@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       const token = await getToken();
-      
+
       if (token) {
         try {
           const userData = await getCurrentUser();
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function login(token: string) {
     try {
       await saveToken(token);
-      
+
       try {
         const userData = await getCurrentUser();
         setUser(userData);
@@ -95,12 +95,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        isAuthenticated, 
-        isLoading, 
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        isLoading,
         user,
-        login, 
+        login,
         logout,
         refreshUser
       }}
@@ -112,10 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (!context) {
     throw new Error('useAuth deve ser usado dentro de AuthProvider');
   }
-  
+
   return context;
 }
