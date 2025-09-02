@@ -279,7 +279,9 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 <View className="flex-row items-center mb-1">
                   <Ionicons name="time" size={12} color="#6b7280" />
                   <Text className="text-xs text-gray-500 ml-1">
-                    Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
+                    Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)} {sala.ultima_limpeza_funcionario ? (
+                      <Text>por {sala.ultima_limpeza_funcionario}</Text>
+                    ): null} 
                   </Text>
                 </View>
 
