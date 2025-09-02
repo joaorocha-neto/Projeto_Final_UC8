@@ -272,7 +272,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                    </TouchableOpacity>
                    
                    {user?.is_superuser && (
-                     <View className="flex-row mt-2 space-x-2">
+                     <View className="flex-row mt-2 space-x-2 gap-2">
                                                 <TouchableOpacity
                            className="bg-blue-600 rounded-lg p-2 flex-1"
                            onPress={() => handleEditSala(sala)}
@@ -454,7 +454,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                  </TouchableOpacity>
                  
                  <TouchableOpacity
-                   className="bg-blue-600 rounded-lg p-3 flex-1 ml-2"
+                   className="bg-green-600 rounded-lg p-3 flex-1 ml-2"
                    onPress={saveSala}
                    disabled={saving}
                  >

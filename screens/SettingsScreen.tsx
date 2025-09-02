@@ -276,7 +276,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowUserList(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-md max-h-96">
+            <View className="bg-white rounded-lg p-3 mx-8 my-44 w-full max-w-sm">
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xl font-bold text-gray-900">
                   Lista de Usuários
@@ -286,7 +286,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               
-              <ScrollView className="flex-1">
+              <ScrollView className="bg-white rounded-lg p-2 w-full max-w-sm">
                 {users.map((userItem) => (
                   <View key={userItem.id} className="bg-gray-50 rounded-lg p-3 mb-2">
                     <Text className="text-base font-semibold text-gray-900">

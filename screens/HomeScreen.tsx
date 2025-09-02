@@ -137,13 +137,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         <View className="bg-gray-100 rounded-lg p-4 mb-4">
           <View className="flex-row items-center mb-3">
-            <Ionicons name="settings" size={24} color="#111827" />
+            <Ionicons name="person" size={24} color="#111827" />
             <Text className="text-xl font-semibold text-gray-900 ml-2">
-              Configurações
+              Perfil
             </Text>
           </View>
           <Text className="text-sm text-gray-600 mb-3">
-            Acesse suas informações de perfil, altere sua senha e gerencie suas preferências.
+            Acesse suas informações de perfil, altere sua senha e visualize seu perfil.
           </Text>
           
           <TouchableOpacity
@@ -151,7 +151,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             onPress={() => navigation.navigate("Settings")}
           >
             <Text className="text-white text-center font-semibold text-base">
-              Ir para Configurações
+              Ir para Perfil
             </Text>
           </TouchableOpacity>
         </View>
