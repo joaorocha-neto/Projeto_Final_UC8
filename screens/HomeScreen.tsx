@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabNavigationProp } from "../navigation/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,10 +8,12 @@ interface HomeScreenProps {
   navigation: TabNavigationProp;
 }
 
+const isLarge = Dimensions.get("screen").width >= 768;
+
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 px-4">
+      <ScrollView className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
         <View className="bg-blue-700 rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
             Sistema de Zeladoria

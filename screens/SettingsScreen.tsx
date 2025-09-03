@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, Modal } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, Modal, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../services/authContext";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
@@ -120,10 +120,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       setCreatingUser(false);
     }
   };
+  
+  const isLarge = Dimensions.get("screen").width >= 768;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 px-4">
+      <View className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
 
         <View className="bg-blue-700 rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
@@ -223,7 +225,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   onPress={() => setShowCreateUser(true)}
                 >
                   <View className="flex-row items-center justify-center">
-                    <Ionicons name="add-circle" size={20} color="#ffffff" />
+                    <Ionicons name="person-add-outline" size={20} color="#ffffff" />
                     <Text className="text-white text-center font-semibold text-base ml-2">
                       Criar Novo Usuário
                     </Text>
@@ -276,7 +278,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowUserList(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-3 mx-8 my-44 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xl font-bold text-gray-900">
                   Lista de Usuários
@@ -286,7 +288,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              <ScrollView className="bg-white rounded-lg p-2 w-full max-w-sm">
+              <ScrollView className="bg-white rounded-lg p-2 w-full max-w-xl">
                 {users.map((userItem) => (
                   <View key={userItem.id} className="bg-gray-50 rounded-lg p-3 mb-2">
                     <Text className="text-base font-semibold text-gray-900">
@@ -313,7 +315,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowCreateUser(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Criar Novo Usuário
               </Text>
@@ -445,7 +447,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowChangePassword(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Alterar Senha
               </Text>

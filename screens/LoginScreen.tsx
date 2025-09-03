@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from "../services/authContext";
 import { login as loginAPI } from "../services/accounts/login";
@@ -32,11 +32,13 @@ const LoginScreen: React.FC = () => {
         Alert.alert('Erro', 'Algo deu errado');
       }
     }
-  }
+  };
+
+  const isLarge = Dimensions.get("screen").width >= 768;
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50 justify-center">
-      <View className="bg-white border border-gray-300 rounded-xl py-8 mx-8 shadow">
+      <View className={`bg-white border border-gray-300 rounded-xl py-8 shadow ${isLarge ? 'mx-72' : 'mx-8'}`}>
         <Text className="text-gray-800 font-bold text-2xl text-center mb-8">
           Login
         </Text>

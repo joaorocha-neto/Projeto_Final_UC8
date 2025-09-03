@@ -3,14 +3,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { tabRoutes } from './tabRoutes';
 import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useWindowDimensions, View } from 'react-native';
+
 const Tab = createBottomTabNavigator();
 
 const BottomTabs: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const isLarge = width >= 768;
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#3B82F6',
+        animation: 'shift',
         tabBarInactiveTintColor: '#9CA3AF',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
@@ -37,7 +42,7 @@ const BottomTabs: React.FC = () => {
                   iconName = "home-outline";
                   break;
                 case "Rooms":
-                  iconName = "search-outline";
+                  iconName = "layers-outline";
                   break;
                 case "Settings":
                   iconName = "person-outline";

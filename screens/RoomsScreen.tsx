@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, Modal, RefreshControl } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, Modal, RefreshControl, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { tabRoutes } from "../navigation/tabRoutes";
@@ -202,9 +202,11 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  const isLarge = Dimensions.get("screen").width >= 768;
+
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 px-4">
+      <View className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
         <View className="bg-blue-700 rounded-xl p-6 mb-4 mt-4">
           <View className="flex-row justify-between items-center">
             <View className="flex-1">
@@ -218,12 +220,11 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             <View className="flex-row items-center justify-end">
               {user?.is_superuser && (
                 <TouchableOpacity
-                  className="bg-green-600 rounded-lg p-2 px-4"
+                  className="bg-green-600 rounded-full"
                   onPress={() => setShowCreateModal(true)}
                 >
-                  <Text className="text-white text-lg font-bold">
-                    +
-                  </Text>
+                  <Ionicons name="add-circle-outline" size={30} color="#fff" />
+
                 </TouchableOpacity>
               )}
             </View>
@@ -267,7 +268,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 <View className="flex-row items-center mb-1">
                   {sala.descricao ? (
                     <>
-                      <Ionicons name="help" size={12} color="#6b7280" />
+                      <Ionicons name="help-outline" size={12} color="#6b7280" />
                       <Text className="text-xs text-gray-500 ml-1">
                         {sala.descricao}
                       </Text>
@@ -277,11 +278,11 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
 
                 <View className="flex-row items-center mb-1">
-                  <Ionicons name="time" size={12} color="#6b7280" />
+                  <Ionicons name="time-outline" size={12} color="#6b7280" />
                   <Text className="text-xs text-gray-500 ml-1">
                     Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)} {sala.ultima_limpeza_funcionario ? (
                       <Text>por {sala.ultima_limpeza_funcionario}</Text>
-                    ): null} 
+                    ) : null}
                   </Text>
                 </View>
 
@@ -310,6 +311,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
                   {user?.is_superuser && (
                     <View className="flex-row mt-2 space-x-2 gap-2">
+
                       <TouchableOpacity
                         className="bg-blue-600 rounded-lg p-2 flex-1"
                         onPress={() => handleEditSala(sala)}
@@ -344,7 +346,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowObservacoesModal(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Marcar como Limpa
               </Text>
@@ -413,7 +415,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           }}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 {editingSala ? 'Editar Sala' : 'Criar Nova Sala'}
               </Text>
@@ -463,7 +465,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </Text>
                 <TextInput
                   className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Ex: Bloco A"
+                  placeholder="Ex: Bloco 1"
                   value={formData.localizacao}
                   onChangeText={(text) => setFormData({ ...formData, localizacao: text })}
                 />
@@ -516,7 +518,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowDeleteConfirm(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-6 mx-4 w-full max-w-sm">
+            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-red-600 mb-4 text-center">
                 Confirmar Exclusão
               </Text>
