@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from "../services/authContext";
 import { login as loginAPI } from "../services/accounts/login";
@@ -38,7 +38,7 @@ const LoginScreen: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50 justify-center">
-      <View className={`bg-white border border-gray-300 rounded-xl py-8 shadow ${isLarge ? 'mx-72' : 'mx-8'}`}>
+      <KeyboardAvoidingView  behavior="padding" className={`bg-white border border-gray-300 rounded-xl py-8 shadow ${isLarge ? 'mx-72' : 'mx-8'}`}>
         <Text className="text-gray-800 font-bold text-2xl text-center mb-8">
           Login
         </Text>
@@ -73,11 +73,11 @@ const LoginScreen: React.FC = () => {
 
         <TouchableOpacity
           onPress={handleLogin}
-          className="bg-blue-500 px-12 py-3 mt-6 self-center rounded-lg"
+          className="bg-blue-500 px-12 py-3 mt-6 self-center rounded-lg mb-8"
         >
           <Text className="text-white font-bold text-lg">Enviar</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView >
     </SafeAreaView>
   );
 };
