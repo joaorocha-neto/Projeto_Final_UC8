@@ -15,7 +15,13 @@ module.exports = {
         poppinsMedium: ["Poppins_500Medium"],
         poppinsBold: ["Poppins_700Bold"],
       },
+      colors: {
+        'azul_senac': '#004A8D',
+        'laranja_senac': ' #F7941D',
+        'laranja_claro_senac': ' #FDC180',
+      },
     },
   },
   plugins: [],
 }
+

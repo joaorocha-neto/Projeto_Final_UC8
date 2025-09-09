@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert, Dimensions, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  KeyboardAvoidingView,
+  Image,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from "../services/authContext";
-import { login as loginAPI } from "../services/accounts/login";
+import { useAuth } from '../services/authContext';
+import { login as loginAPI } from '../services/accounts/login';
+
+// Importe o novo componente
+import FloatingLabelInput from '../components/FloatingLabelInput';
 
 const LoginScreen: React.FC = () => {
   const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  // Mantemos a lógica de controle de "toque" para a validação
+  const [hasUsernameBeenTouched, setHasUsernameBeenTouched] = useState(false);
+  const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
+
+  // A lógica de cor da borda agora verifica o 'toque' e se está vazio
+  const getBorderColor = (hasBeenTouched: boolean, value: string) => {
+    if (hasBeenTouched && !value) {
+      return 'border-red-500'; // Vermelho se já foi tocado e está vazio
+    }
+    return 'border-gray-300'; // Cor padrão. O foco é gerenciado dentro do componente
+  };
+
   async function handleLogin() {
+    setHasUsernameBeenTouched(true);
+    setHasPasswordBeenTouched(true);
+
     if (!username || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
       return;
@@ -18,12 +44,7 @@ const LoginScreen: React.FC = () => {
     try {
       const data = await loginAPI(username, password);
       await login(data.token);
-
-      const userName = data.user_data?.username ||
-        data.user?.username ||
-        data.username ||
-        username;
-
+      const userName = data.user_data?.username || data.user?.username || data.username || username;
       Alert.alert('Login realizado!', `Bem-vindo, ${userName}`);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -32,52 +53,72 @@ const LoginScreen: React.FC = () => {
         Alert.alert('Erro', 'Algo deu errado');
       }
     }
-  };
+  }
 
-  const isLarge = Dimensions.get("screen").width >= 768;
+  const isLarge = Dimensions.get('screen').width >= 768;
+
+  const usernameBorderColor = getBorderColor(hasUsernameBeenTouched, username);
+  const passwordBorderColor = getBorderColor(hasPasswordBeenTouched, password);
 
   return (
     <SafeAreaView className="flex-1 bg-blue-50 justify-center">
-      <KeyboardAvoidingView  behavior="padding" className={`bg-white border border-gray-300 rounded-xl py-8 shadow ${isLarge ? 'mx-72' : 'mx-8'}`}>
-        <Text className="text-gray-800 font-bold text-2xl text-center mb-8">
+      <KeyboardAvoidingView
+        behavior="padding"
+        className={`bg-white border border-gray-300 rounded-xl py-8 shadow ${isLarge ? 'mx-72' : 'mx-8'}`}
+      >
+        
+        <Image source={require('../IMG/SenacLogo.png')} className='h-20 w-28 mx-auto'></Image>
+        
+        <Text className="text-azul_senac font-extrabold text-4xl text-center mb-8">
           Login
         </Text>
 
-        <View className="px-5">
-          <Text className="mt-6 mx-5 text-lg font-bold mb-2 text-gray-800">
-            Usuário:
-          </Text>
-          <TextInput
-            className="bg-white px-4 py-3 mx-5 rounded-lg border border-gray-200 text-base"
-            placeholder="Digite seu usuário..."
-            placeholderTextColor="#888"
-            onChangeText={setUsername}
-            value={username}
-            autoCapitalize="none"
-            keyboardType="default"
-          />
+        <View className="px-5 gap-6">
+          {/* --- Campo Usuário com Rótulo Flutuante --- */}
+          <View>
 
-          <Text className="mt-6 mx-5 text-lg font-bold mb-2 text-gray-800">
-            Senha:
-          </Text>
-          <TextInput
-            className="bg-white px-4 py-3 mx-5 rounded-lg border border-gray-200 text-base"
-            placeholder="Digite sua senha..."
-            placeholderTextColor="#888"
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry
-          />
+
+            <FloatingLabelInput
+              label="Digite seu Usuário"
+              value={username}
+              onChangeText={setUsername}
+              borderColor={usernameBorderColor}
+              onBlur={() => setHasUsernameBeenTouched(true)} // Marca como tocado ao sair
+              nameIcon='person'
+            />
+            {hasUsernameBeenTouched && !username && (
+              <Text className="text-red-500 text-sm mt-1 mx-1">
+                O campo usuário é obrigatório.
+              </Text>
+            )}
+          </View>
+
+          {/* --- Campo Senha com Rótulo Flutuante --- */}
+          <View>
+            <FloatingLabelInput
+              label="Digite sua Senha"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              borderColor={passwordBorderColor}
+              onBlur={() => setHasPasswordBeenTouched(true)} // Marca como tocado ao sair
+              nameIcon='lock-closed'
+            />
+            {hasPasswordBeenTouched && !password && (
+              <Text className="text-red-500 text-sm mt-1 mx-1">
+                O campo senha é obrigatório.
+              </Text>
+            )}
+          </View>
         </View>
-
 
         <TouchableOpacity
           onPress={handleLogin}
-          className="bg-blue-500 px-12 py-3 mt-6 self-center rounded-lg mb-8"
+          className="bg-azul_senac px-12 py-3 mt-8 self-center rounded-lg mb-8"
         >
-          <Text className="text-white font-bold text-lg">Enviar</Text>
+          <Text className="text-white font-bold text-lg">Entrar</Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView >
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
