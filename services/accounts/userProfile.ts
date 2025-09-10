@@ -6,6 +6,12 @@ export interface User {
   email: string;
   is_staff: boolean;
   is_superuser: boolean;
+  groups: number;
+  profile: Profile
+}
+
+export interface Profile {
+  profile_picture: string | null;
 }
 
 export interface CreateUserData {

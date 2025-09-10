@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../services/authContext';
 import { login as loginAPI } from '../services/accounts/login';
 
-// Importe o novo componente
 import FloatingLabelInput from '../components/FloatingLabelInput';
 
 const LoginScreen: React.FC = () => {
@@ -20,16 +19,14 @@ const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Mantemos a lógica de controle de "toque" para a validação
   const [hasUsernameBeenTouched, setHasUsernameBeenTouched] = useState(false);
   const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
 
-  // A lógica de cor da borda agora verifica o 'toque' e se está vazio
   const getBorderColor = (hasBeenTouched: boolean, value: string) => {
     if (hasBeenTouched && !value) {
-      return 'border-red-500'; // Vermelho se já foi tocado e está vazio
+      return 'border-red-500';
     }
-    return 'border-gray-300'; // Cor padrão. O foco é gerenciado dentro do componente
+    return 'border-gray-300';
   };
 
   async function handleLogin() {
@@ -74,16 +71,15 @@ const LoginScreen: React.FC = () => {
         </Text>
 
         <View className="px-5 gap-6">
-          {/* --- Campo Usuário com Rótulo Flutuante --- */}
+          
           <View>
-
 
             <FloatingLabelInput
               label="Digite seu Usuário"
               value={username}
               onChangeText={setUsername}
               borderColor={usernameBorderColor}
-              onBlur={() => setHasUsernameBeenTouched(true)} // Marca como tocado ao sair
+              onBlur={() => setHasUsernameBeenTouched(true)}
               nameIcon='person'
             />
             {hasUsernameBeenTouched && !username && (
@@ -93,7 +89,6 @@ const LoginScreen: React.FC = () => {
             )}
           </View>
 
-          {/* --- Campo Senha com Rótulo Flutuante --- */}
           <View>
             <FloatingLabelInput
               label="Digite sua Senha"
@@ -101,7 +96,7 @@ const LoginScreen: React.FC = () => {
               onChangeText={setPassword}
               secureTextEntry
               borderColor={passwordBorderColor}
-              onBlur={() => setHasPasswordBeenTouched(true)} // Marca como tocado ao sair
+              onBlur={() => setHasPasswordBeenTouched(true)}
               nameIcon='lock-closed'
             />
             {hasPasswordBeenTouched && !password && (

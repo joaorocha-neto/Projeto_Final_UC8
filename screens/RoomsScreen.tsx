@@ -207,7 +207,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
-        <View className="bg-blue-700 rounded-xl p-6 mb-4 mt-4">
+        <View className="bg-azul_senac rounded-xl p-6 mb-4 mt-4">
           <View className="flex-row justify-between items-center">
             <View className="flex-1">
               <Text className="text-3xl font-bold text-white text-center">
@@ -220,7 +220,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             <View className="flex-row items-center justify-end">
               {user?.is_superuser && (
                 <TouchableOpacity
-                  className="bg-green-600 rounded-full"
+                  className="bg-laranja_senac rounded-full"
                   onPress={() => setShowCreateModal(true)}
                 >
                   <Ionicons name="add-circle-outline" size={30} color="#fff" />
@@ -251,7 +251,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             {salas.map((sala) => (
               <View key={sala.id} className="bg-gray-100 rounded-lg p-4 mb-4">
                 <View className="flex-row justify-between items-start mb-2">
-                  <Text className="text-xl font-semibold text-gray-900 flex-1">
+                  <Text className="text-xl font-semibold text-azul_senac flex-1">
                     {sala.nome_numero}
                   </Text>
                   <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === 'Limpa' ? 'bg-green-100' : 'bg-red-100'}`}>
@@ -278,7 +278,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
 
                 <View className="flex-row items-center mb-1">
-                  <Ionicons name="time-outline" size={12} color="#6b7280" />
+                  <Ionicons name="time" size={12} color="#004A8D" />
                   <Text className="text-xs text-gray-500 ml-1">
                     Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)} {sala.ultima_limpeza_funcionario ? (
                       <Text>por {sala.ultima_limpeza_funcionario}</Text>
@@ -287,7 +287,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </View>
 
                 <View className="flex-row items-center mb-1">
-                  <Ionicons name="location" size={12} color="#6b7280" />
+                  <Ionicons name="location" size={12} color="#F7941D" />
                   <Text className="text-xs text-gray-500 ml-1">
                     Localização: {sala.localizacao}
                   </Text>
@@ -295,15 +295,15 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
                 <View className="border-t border-gray-200 pt-2 mt-2">
                   <TouchableOpacity
-                    className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === 'Limpa' ? 'bg-gray-300' : 'bg-green-600'}`}
+                    className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === 'Limpa' ? 'bg-azul_claro_senac' : 'bg-azul_senac'}`}
                     onPress={() => handleMarcarComoLimpa(sala)}
                     disabled={sala.status_limpeza === 'Limpa'}
                   >
                     <View className="flex-row items-center justify-center">
                       {sala.status_limpeza === 'Limpa' && (
-                        <Ionicons name="checkmark-circle" size={16} color="#6b7280" />
+                        <Ionicons name="checkmark-circle" size={16} color="#d1d5db" />
                       )}
-                      <Text className={`text-center font-semibold text-sm ${sala.status_limpeza === 'Limpa' ? 'text-gray-500' : 'text-white'} ${sala.status_limpeza === 'Limpa' ? 'ml-1' : ''}`}>
+                      <Text className={`text-center font-semibold text-sm ${sala.status_limpeza === 'Limpa' ? 'text-gray-300' : 'text-white'} ${sala.status_limpeza === 'Limpa' ? 'ml-1' : ''}`}>
                         {sala.status_limpeza === 'Limpa' ? 'Limpa' : 'Marcar como Limpa'}
                       </Text>
                     </View>
@@ -313,7 +313,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                     <View className="flex-row mt-2 space-x-2 gap-2">
 
                       <TouchableOpacity
-                        className="bg-blue-600 rounded-lg p-2 flex-1"
+                        className="bg-laranja_senac rounded-lg p-2 flex-1"
                         onPress={() => handleEditSala(sala)}
                       >
                         <Text className="text-white text-center font-semibold text-xs">
@@ -322,7 +322,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        className="bg-red-600 rounded-lg p-2 flex-1"
+                        className="bg-red-700 rounded-lg p-2 flex-1"
                         onPress={() => handleDeleteSala(sala)}
                       >
                         <Text className="text-white text-center font-semibold text-xs">
@@ -346,7 +346,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowObservacoesModal(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
+            <View className={`bg-gray-100 rounded-xl w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 Marcar como Limpa
               </Text>
@@ -387,7 +387,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="bg-green-600 rounded-lg p-3 flex-1 ml-2"
+                  className="bg-azul_senac rounded-lg p-3 flex-1 ml-2"
                   onPress={confirmarMarcarComoLimpa}
                   disabled={marcandoLimpa}
                 >
@@ -415,7 +415,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           }}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
+            <View className={`bg-gray-200 rounded-xl w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 {editingSala ? 'Editar Sala' : 'Criar Nova Sala'}
               </Text>
@@ -493,7 +493,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="bg-green-600 rounded-lg p-3 flex-1 ml-2"
+                  className="bg-azul_senac rounded-lg p-3 flex-1 ml-2"
                   onPress={saveSala}
                   disabled={saving}
                 >
@@ -518,8 +518,8 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           onRequestClose={() => setShowDeleteConfirm(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className={`bg-white rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
-              <Text className="text-xl font-bold text-red-600 mb-4 text-center">
+            <View className={`bg-gray-200 rounded-lg w-full p-6 ${isLarge ? 'max-w-xl' : 'max-w-sm'}`}>
+              <Text className="text-xl font-bold text-red-700 mb-4 text-center">
                 Confirmar Exclusão
               </Text>
 
@@ -548,7 +548,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="bg-red-600 rounded-lg p-3 flex-1 ml-2"
+                  className="bg-red-700 rounded-lg p-3 flex-1 ml-2"
                   onPress={confirmDeleteSala}
                   disabled={deleting}
                 >

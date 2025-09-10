@@ -14,7 +14,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
-        <View className="bg-blue-700 rounded-xl p-6 mb-6 mt-4">
+        <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
             Sistema de Zeladoria
           </Text>
@@ -149,7 +149,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </Text>
 
           <TouchableOpacity
-            className="bg-blue-600 rounded-lg p-3"
+            className="bg-azul_senac rounded-lg p-3"
             onPress={() => navigation.navigate("Settings")}
           >
             <Text className="text-white text-center font-semibold text-base">
@@ -170,7 +170,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </Text>
 
           <TouchableOpacity
-            className="bg-blue-600 rounded-lg p-3"
+            className="bg-azul_senac rounded-lg p-3"
             onPress={() => navigation.navigate("Rooms")}
           >
             <Text className="text-white text-center font-semibold text-base">
