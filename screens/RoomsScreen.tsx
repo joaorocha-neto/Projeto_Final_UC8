@@ -10,6 +10,7 @@ import { parseISO, format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 
+
 type RoomsScreenNavigationProp = BottomTabNavigationProp<
   Record<typeof tabRoutes[number]["name"], undefined>,
   "Rooms"
@@ -220,10 +221,10 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             <View className="flex-row items-center justify-end">
               {user?.is_superuser && (
                 <TouchableOpacity
-                  className="bg-laranja_senac rounded-full"
+                  className="bg-white rounded-full"
                   onPress={() => setShowCreateModal(true)}
                 >
-                  <Ionicons name="add-circle-outline" size={30} color="#fff" />
+                  <Ionicons name="add-circle-outline" size={30} color="#F7941D" />
 
                 </TouchableOpacity>
               )}

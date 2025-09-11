@@ -4,8 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../services/authContext";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { tabRoutes } from "../navigation/tabRoutes";
-import { getCurrentUser, changePassword, listUsers, createUser, User, ChangePasswordData, CreateUserData } from "../services/accounts/userProfile";
+import { getCurrentUser, changePassword, listUsers, createUser, User, ChangePasswordData, CreateUserData, setProfile } from "../services/accounts/userProfile";
 import { Ionicons } from "@expo/vector-icons";
+import ProfileImagePicker from "../components/ProfileImagePicker";
 
 type SettingsScreenNavigationProp = BottomTabNavigationProp<
   Record<typeof tabRoutes[number]["name"], undefined>,
@@ -17,7 +18,7 @@ interface SettingsScreenProps {
 }
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
-  const { logout, user, refreshUser } = useAuth();
+  const { logout, user, refreshUser, updateProfile } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
   const [showCreateUser, setShowCreateUser] = useState(false);
@@ -29,6 +30,42 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     new_password: "",
     confirm_new_password: "",
   });
+
+  const [IsUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
+  const handleImageSelected = async (imageUri: string) => {
+    setIsUpdatingProfile(true);
+    try {
+      const result = await updateProfile(imageUri); // 'result' agora é um objeto
+      if (result.success) {
+        Alert.alert('Sucesso', 'Foto de perfil atualizada com sucesso!');
+      } else {
+        Alert.alert('Erro', result.error || 'Erro ao atualizar foto de perfil');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao atualizar foto de perfil');
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+  
+  const handleImageRemoved = async () => {
+    setIsUpdatingProfile(true);
+    try {
+      const result = await updateProfile(null); // 'result' agora é um objeto
+      if (result.success) {
+        Alert.alert('Sucesso', 'Foto de perfil removida com sucesso!');
+      } else {
+        Alert.alert('Erro', result.error || 'Erro ao remover foto de perfil');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao remover foto de perfil');
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+
   const [userData, setUserData] = useState<CreateUserData>({
     username: "",
     password: "",
@@ -43,13 +80,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const handleImageLoadSuccess = () => {
     const Perfil = "SUCESSO: Imagem de perfil foi puxada e carregada corretamente da API.";
     console.log(Perfil);
-    setImageError(false); 
+    setImageError(false);
   };
 
   const handleImageLoadError = () => {
     const Perfil = "ERRO: A URL da imagem foi puxada da API, mas falhou ao carregar. Usando fallback.";
     console.log(Perfil);
-    setImageError(true); 
+    setImageError(true);
   };
 
   const handleChangePassword = async () => {
@@ -136,6 +173,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
   const isLarge = Dimensions.get("screen").width >= 768;
 
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
@@ -165,18 +203,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </View>
 
                 <View className="items-center mb-4">
-                  {user.profile?.profile_picture && !imageError ? (
-                    <Image
-                      source={{ uri: user.profile.profile_picture }}
-                      className="w-24 h-24 rounded-full"
-                      onLoad={handleImageLoadSuccess}
-                      onError={handleImageLoadError}
-                    />
-                  ) : (
+                   {/* {user.profile?.profile_picture ?  (  */}
+                    <ProfileImagePicker
+                      currentImageUri={user.profile?.profile_picture}
+                      onImageRemoved={handleImageRemoved}
+                      onImageSelected={handleImageSelected}
+                      />
+                   {/* ) : (
                     <View className="w-24 h-24 rounded-full bg-azul_senac justify-center items-center">
                       <Ionicons name="person" size={50} color="#ffffff" />
                     </View>
-                  )}
+                  )}  */}
                   <Text className="text-lg font-semibold text-gray-900 text-center mt-3">
                     {user.username}
                   </Text>
@@ -286,7 +323,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             </View>
           </ScrollView>
         )}
-        
+
         <Modal
           visible={showUserList}
           transparent={true}

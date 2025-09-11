@@ -11,7 +11,7 @@ export interface User {
 }
 
 export interface Profile {
-  profile_picture: string | null;
+  profile_picture: string;
 }
 
 export interface CreateUserData {
@@ -39,9 +39,26 @@ export interface CreateUserResponse {
 export const getCurrentUser = async (): Promise<User> => {
   try {
     const response = await api.get("/accounts/current_user/");
-    return response.data;
+    const user = response.data;
+
+    if (user.profile && user.profile.profile_picture && !user.profile.profile_picture.startsWith('http')) {
+      const baseURL = "https://zeladoria.tsr.net.br"; 
+      user.profile.profile_picture = `${baseURL}${user.profile.profile_picture}`;
+    }
+
+    return user;
   } catch (error: any) {
     console.error("Erro ao obter dados do usuário:", error);
+    throw error;
+  }
+};
+
+export const setProfile = async (): Promise<Profile> => {
+  try {
+    const response = await api.get("accounts/profile/");
+    return response.data;  
+  } catch (error) {
+    console.error("Erro ao buscar perfil", error);
     throw error;
   }
 };
