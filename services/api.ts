@@ -9,7 +9,6 @@ const api = axios.create({
   timeout: 10000,
 });
 
-
 api.interceptors.request.use(
   async (config) => {
     const token = await getToken();
@@ -20,9 +19,8 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
-
 
 api.interceptors.response.use(
   (response) => response,
@@ -32,7 +30,7 @@ api.interceptors.response.use(
       console.log("Token inválido ou expirado, removendo token...");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

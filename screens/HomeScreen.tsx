@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabNavigationProp } from "../navigation/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +19,7 @@ const isLarge = Dimensions.get("screen").width >= 768;
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
+      <ScrollView className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
         <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
             Sistema de Zeladoria
@@ -31,7 +37,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </Text>
           </View>
           <Text className="text-sm text-gray-600 mb-2">
-            Este aplicativo permite gerenciar salas e controlar o status de limpeza de forma eficiente.
+            Este aplicativo permite gerenciar salas e controlar o status de
+            limpeza de forma eficiente.
           </Text>
         </View>
 
@@ -51,7 +58,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
             </View>
             <Text className="text-sm text-gray-600">
-              Veja todas as salas disponíveis com informações detalhadas como capacidade, localização e status de limpeza.
+              Veja todas as salas disponíveis com informações detalhadas como
+              capacidade, localização e status de limpeza.
             </Text>
           </View>
 
@@ -63,7 +71,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
             </View>
             <Text className="text-sm text-gray-600">
-              Registre quando uma sala foi limpa, adicionando observações opcionais sobre o trabalho realizado.
+              Registre quando uma sala foi limpa, adicionando observações
+              opcionais sobre o trabalho realizado.
             </Text>
           </View>
 
@@ -75,7 +84,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
             </View>
             <Text className="text-sm text-gray-600">
-              Acompanhe quais salas estão limpas (verde) ou precisam de limpeza (vermelho).
+              Acompanhe quais salas estão limpas (verde) ou precisam de limpeza
+              (vermelho).
             </Text>
           </View>
 
@@ -87,7 +97,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
             </View>
             <Text className="text-sm text-gray-600">
-              Crie, edite e exclua salas conforme necessário (apenas para superusuários).
+              Crie, edite e exclua salas conforme necessário (apenas para
+              superusuários).
             </Text>
           </View>
         </View>
@@ -123,7 +134,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               3. Marque como Limpa
             </Text>
             <Text className="text-sm text-gray-600">
-              Após limpar uma sala, toque no botão "Marcar como Limpa" e adicione observações se necessário.
+              Após limpar uma sala, toque no botão "Marcar como Limpa" e
+              adicione observações se necessário.
             </Text>
           </View>
 
@@ -132,7 +144,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               4. Atualize a Lista
             </Text>
             <Text className="text-sm text-gray-600">
-              Puxe a tela para baixo para atualizar a lista de salas e ver as mudanças.
+              Puxe a tela para baixo para atualizar a lista de salas e ver as
+              mudanças.
             </Text>
           </View>
         </View>
@@ -145,7 +158,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </Text>
           </View>
           <Text className="text-sm text-gray-600 mb-3">
-            Acesse suas informações de perfil, altere sua senha e visualize seu perfil.
+            Acesse suas informações de perfil, altere sua senha e visualize seu
+            perfil.
           </Text>
 
           <TouchableOpacity

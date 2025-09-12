@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getToken, saveToken, removeToken } from './authStorage';
-import { getCurrentUser, User } from './accounts/userProfile';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getToken, saveToken, removeToken } from "./authStorage";
+import { getCurrentUser, User } from "./accounts/userProfile";
 import api from "./api";
 
 interface AuthContextData {
@@ -10,7 +10,9 @@ interface AuthContextData {
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
-  updateProfile: (imageUri: string | null) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (
+    imageUri: string | null,
+  ) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -35,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userData);
           setIsAuthenticated(true);
         } catch (error) {
-          console.log('Token inválido, removendo...');
+          console.log("Token inválido, removendo...");
           await removeToken();
           setUser(null);
           setIsAuthenticated(false);
@@ -45,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error('Erro ao verificar autenticação:', error);
+      console.error("Erro ao verificar autenticação:", error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -66,10 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await removeToken();
         setUser(null);
         setIsAuthenticated(false);
-        throw new Error('Token inválido ou usuário não encontrado');
+        throw new Error("Token inválido ou usuário não encontrado");
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      console.error("Erro ao fazer login:", error);
       throw error;
     }
   }
@@ -80,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
-      console.error('Erro ao fazer logout:', error);
+      console.error("Erro ao fazer logout:", error);
       throw error;
     }
   }
@@ -90,42 +92,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const userData = await getCurrentUser();
       setUser(userData);
     } catch (error) {
-      console.error('Erro ao atualizar dados do usuário:', error);
+      console.error("Erro ao atualizar dados do usuário:", error);
       await logout();
       throw error;
     }
   }
 
   // A função que estava faltando
-  async function updateProfile(imageUri: string | null): Promise<{ success: boolean; error?: string }> {
+  async function updateProfile(
+    imageUri: string | null,
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       if (imageUri) {
         const formData = new FormData();
-        formData.append('profile_picture', {
+        formData.append("profile_picture", {
           uri: imageUri,
-          name: 'profile_pic.jpg',
-          type: 'image/jpeg',
+          name: "profile_pic.jpg",
+          type: "image/jpeg",
         } as any);
-        
-        await api.patch('accounts/profile/', formData, {
+
+        await api.patch("accounts/profile/", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
       } else {
-        await api.patch('accounts/profile/', { profile_picture: null });
+        await api.patch("accounts/profile/", { profile_picture: null });
       }
-      
+
       // Atualiza os dados do usuário no estado
       await refreshUser();
-      
+
       return { success: true }; // Retorna sucesso
-      
     } catch (error: any) {
-      console.error('Erro ao atualizar o perfil:', error);
-      let errorMessage = 'Erro desconhecido ao atualizar a foto de perfil';
+      console.error("Erro ao atualizar o perfil:", error);
+      let errorMessage = "Erro desconhecido ao atualizar a foto de perfil";
       if (error.response?.data?.profile_picture) {
-        errorMessage = error.response.data.profile_picture.join(' ');
+        errorMessage = error.response.data.profile_picture.join(" ");
       } else if (error.response?.data?.detail) {
         errorMessage = error.response.data.detail;
       }
@@ -154,7 +157,7 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de AuthProvider");
   }
 
   return context;

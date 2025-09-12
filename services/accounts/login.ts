@@ -14,7 +14,10 @@ interface LoginResponse {
   };
 }
 
-export async function login(username: string, password: string): Promise<LoginResponse> {
+export async function login(
+  username: string,
+  password: string,
+): Promise<LoginResponse> {
   try {
     const response = await api.post<LoginResponse>("/accounts/login/", {
       username,

@@ -1,15 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, Modal, Dimensions, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+  TextInput,
+  Modal,
+  Dimensions,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../services/authContext";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { tabRoutes } from "../navigation/tabRoutes";
-import { getCurrentUser, changePassword, listUsers, createUser, User, ChangePasswordData, CreateUserData, setProfile } from "../services/accounts/userProfile";
+import {
+  getCurrentUser,
+  changePassword,
+  listUsers,
+  createUser,
+  User,
+  ChangePasswordData,
+  CreateUserData,
+  setProfile,
+} from "../services/accounts/userProfile";
 import { Ionicons } from "@expo/vector-icons";
 import ProfileImagePicker from "../components/ProfileImagePicker";
 
 type SettingsScreenNavigationProp = BottomTabNavigationProp<
-  Record<typeof tabRoutes[number]["name"], undefined>,
+  Record<(typeof tabRoutes)[number]["name"], undefined>,
   "Settings"
 >;
 
@@ -25,6 +45,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [imageError, setImageError] = useState(false);
+
   const [passwordData, setPasswordData] = useState<ChangePasswordData>({
     old_password: "",
     new_password: "",
@@ -36,35 +57,34 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const handleImageSelected = async (imageUri: string) => {
     setIsUpdatingProfile(true);
     try {
-      const result = await updateProfile(imageUri); // 'result' agora é um objeto
+      const result = await updateProfile(imageUri);
       if (result.success) {
-        Alert.alert('Sucesso', 'Foto de perfil atualizada com sucesso!');
+        Alert.alert("Sucesso", "Foto de perfil atualizada com sucesso!");
       } else {
-        Alert.alert('Erro', result.error || 'Erro ao atualizar foto de perfil');
+        Alert.alert("Erro", result.error || "Erro ao atualizar foto de perfil");
       }
     } catch (error) {
-      Alert.alert('Erro', 'Erro ao atualizar foto de perfil');
-    } finally {
-      setIsUpdatingProfile(false);
-    }
-  };
-  
-  const handleImageRemoved = async () => {
-    setIsUpdatingProfile(true);
-    try {
-      const result = await updateProfile(null); // 'result' agora é um objeto
-      if (result.success) {
-        Alert.alert('Sucesso', 'Foto de perfil removida com sucesso!');
-      } else {
-        Alert.alert('Erro', result.error || 'Erro ao remover foto de perfil');
-      }
-    } catch (error) {
-      Alert.alert('Erro', 'Erro ao remover foto de perfil');
+      Alert.alert("Erro", "Erro ao atualizar foto de perfil");
     } finally {
       setIsUpdatingProfile(false);
     }
   };
 
+  const handleImageRemoved = async () => {
+    setIsUpdatingProfile(true);
+    try {
+      const result = await updateProfile(null);
+      if (result.success) {
+        Alert.alert("Sucesso", "Foto de perfil removida com sucesso!");
+      } else {
+        Alert.alert("Erro", result.error || "Erro ao remover foto de perfil");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Erro ao remover foto de perfil");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
 
   const [userData, setUserData] = useState<CreateUserData>({
     username: "",
@@ -78,19 +98,46 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [creatingUser, setCreatingUser] = useState(false);
 
   const handleImageLoadSuccess = () => {
-    const Perfil = "SUCESSO: Imagem de perfil foi puxada e carregada corretamente da API.";
+    const Perfil =
+      "SUCESSO: Imagem de perfil foi puxada e carregada corretamente da API.";
     console.log(Perfil);
     setImageError(false);
   };
 
   const handleImageLoadError = () => {
-    const Perfil = "ERRO: A URL da imagem foi puxada da API, mas falhou ao carregar. Usando fallback.";
+    const Perfil =
+      "ERRO: A URL da imagem foi puxada da API, mas falhou ao carregar. Usando fallback.";
     console.log(Perfil);
     setImageError(true);
   };
 
+  const closeChangePasswordModal = () => {
+    setShowChangePassword(false);
+    setPasswordData({
+      old_password: "",
+      new_password: "",
+      confirm_new_password: "",
+    });
+  };
+
+  const closeCreateUserModal = () => {
+    setShowCreateUser(false);
+    setUserData({
+      username: "",
+      password: "",
+      confirm_password: "",
+      email: "",
+      is_staff: false,
+      is_superuser: false,
+    });
+  };
+
   const handleChangePassword = async () => {
-    if (!passwordData.old_password || !passwordData.new_password || !passwordData.confirm_new_password) {
+    if (
+      !passwordData.old_password ||
+      !passwordData.new_password ||
+      !passwordData.confirm_new_password
+    ) {
       Alert.alert("Erro", "Por favor, preencha todos os campos");
       return;
     }
@@ -104,12 +151,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       setChangingPassword(true);
       await changePassword(passwordData);
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
-      setShowChangePassword(false);
-      setPasswordData({
-        old_password: "",
-        new_password: "",
-        confirm_new_password: "",
-      });
+      closeChangePasswordModal();
       await refreshUser();
     } catch (error: any) {
       console.error("Erro ao alterar senha:", error);
@@ -141,7 +183,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   const handleCreateUser = async () => {
-    if (!userData.username || !userData.password || !userData.confirm_password) {
+    if (
+      !userData.username ||
+      !userData.password ||
+      !userData.confirm_password
+    ) {
       Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios");
       return;
     }
@@ -155,15 +201,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       setCreatingUser(true);
       await createUser(userData);
       Alert.alert("Sucesso", "Usuário criado com sucesso!");
-      setShowCreateUser(false);
-      setUserData({
-        username: "",
-        password: "",
-        confirm_password: "",
-        email: "",
-        is_staff: false,
-        is_superuser: false,
-      });
+      closeCreateUserModal();
     } catch (error: any) {
       Alert.alert("Erro", "Não foi possível criar o usuário");
     } finally {
@@ -173,10 +211,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
   const isLarge = Dimensions.get("screen").width >= 768;
 
-
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className={`flex-1 px-4 ${isLarge ? 'mx-8' : 'mx-0'}`}>
+      <View className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
         <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
             Perfil do Usuário
@@ -196,52 +233,68 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             {user && (
               <View className="bg-gray-100 rounded-lg p-4 mb-4">
                 <View className="flex-row items-center mb-3">
-                  <Ionicons name="information-circle" size={24} color="#111827" />
+                  <Ionicons
+                    name="information-circle"
+                    size={24}
+                    color="#111827"
+                  />
                   <Text className="text-xl font-semibold text-gray-900 ml-2">
                     Informações Pessoais
                   </Text>
                 </View>
 
                 <View className="items-center mb-4">
-                   {/* {user.profile?.profile_picture ?  (  */}
-                    <ProfileImagePicker
-                      currentImageUri={user.profile?.profile_picture}
-                      onImageRemoved={handleImageRemoved}
-                      onImageSelected={handleImageSelected}
-                      />
-                   {/* ) : (
-                    <View className="w-24 h-24 rounded-full bg-azul_senac justify-center items-center">
-                      <Ionicons name="person" size={50} color="#ffffff" />
-                    </View>
-                  )}  */}
+                  <ProfileImagePicker
+                    currentImageUri={user.profile?.profile_picture}
+                    onImageRemoved={handleImageRemoved}
+                    onImageSelected={handleImageSelected}
+                    
+                  />
                   <Text className="text-lg font-semibold text-gray-900 text-center mt-3">
                     {user.username}
                   </Text>
                   <Text className="text-sm text-gray-600 text-center">
-                    {user.is_superuser ? "Super Administrador" :
-                      user.is_staff ? "Administrador" : "Usuário Comum"}
+                    {user.is_superuser
+                      ? "Super Administrador"
+                      : user.is_staff
+                      ? "Administrador"
+                      : "Usuário Comum"}
                   </Text>
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-sm font-medium text-gray-700">Nome de usuário:</Text>
-                  <Text className="text-base text-gray-900">{user.username}</Text>
+                  <Text className="text-sm font-medium text-gray-700">
+                    Nome de usuário:
+                  </Text>
+                  <Text className="text-base text-gray-900">
+                    {user.username}
+                  </Text>
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-sm font-medium text-gray-700">E-mail:</Text>
-                  <Text className="text-base text-gray-900">{user.email || "Não informado"}</Text>
+                  <Text className="text-sm font-medium text-gray-700">
+                    E-mail:
+                  </Text>
+                  <Text className="text-base text-gray-900">
+                    {user.email || "Não informado"}
+                  </Text>
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-sm font-medium text-gray-700">ID do usuário:</Text>
+                  <Text className="text-sm font-medium text-gray-700">
+                    ID do usuário:
+                  </Text>
                   <Text className="text-base text-gray-900">{user.id}</Text>
                 </View>
 
                 {(user.is_staff || user.is_superuser) && (
                   <View className="bg-blue-50 rounded-lg p-3 mt-2">
                     <View className="flex-row items-center">
-                      <Ionicons name="checkmark-circle" size={16} color="#004A8D" />
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={16}
+                        color="#004A8D"
+                      />
                       <Text className="text-sm text-azul_senac ml-2">
                         Você possui privilégios administrativos
                       </Text>
@@ -282,7 +335,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   onPress={() => setShowCreateUser(true)}
                 >
                   <View className="flex-row items-center justify-center">
-                    <Ionicons name="person-add-outline" size={20} color="#ffffff" />
+                    <Ionicons
+                      name="person-add-outline"
+                      size={20}
+                      color="#ffffff"
+                    />
                     <Text className="text-white text-center font-semibold text-base ml-2">
                       Criar Novo Usuário
                     </Text>
@@ -324,28 +381,323 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           </ScrollView>
         )}
 
+        {/* Modal para Listar Usuários */}
         <Modal
           visible={showUserList}
           transparent={true}
           animationType="slide"
           onRequestClose={() => setShowUserList(false)}
         >
+          <View className="flex-1 justify-center items-center bg-black/50 p-4">
+            <View
+              className={`bg-white rounded-lg w-full p-6 max-h-[80%] ${
+                isLarge ? "max-w-xl" : "max-w-sm"
+              }`}
+            >
+              <View className="flex-row justify-between items-center mb-4">
+                <Text className="text-xl font-bold text-gray-900">
+                  Lista de Usuários
+                </Text>
+                <TouchableOpacity onPress={() => setShowUserList(false)}>
+                  <Ionicons name="close" size={24} color="#6b7280" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView>
+                {users.map((userItem) => (
+                  <View
+                    key={userItem.id}
+                    className="bg-gray-50 rounded-lg p-3 mb-2"
+                  >
+                    <Text className="text-base font-semibold text-gray-900">
+                      {userItem.username}
+                    </Text>
+                    <Text className="text-sm text-gray-600">
+                      {userItem.email || "Sem e-mail"}
+                    </Text>
+                    <Text className="text-xs text-gray-500 mt-1">
+                      {userItem.is_superuser
+                        ? "Super Administrador"
+                        : userItem.is_staff
+                        ? "Administrador"
+                        : "Usuário Comum"}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
         </Modal>
 
+        {/* Modal para Criar Usuário */}
         <Modal
           visible={showCreateUser}
           transparent={true}
           animationType="slide"
-          onRequestClose={() => setShowCreateUser(false)}
+          onRequestClose={closeCreateUserModal}
         >
+          <View className="flex-1 justify-center items-center bg-black/50 p-4">
+            <ScrollView
+              className="w-full"
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                className={`bg-white rounded-lg w-full p-6 ${
+                  isLarge ? "max-w-xl" : "max-w-sm"
+                }`}
+              >
+                <View className="flex-row justify-between items-center mb-4">
+                    <Text className="text-xl font-bold text-gray-900">
+                    Criar Novo Usuário
+                    </Text>
+                    <TouchableOpacity onPress={closeCreateUserModal}>
+                    <Ionicons name="close" size={24} color="#6b7280" />
+                    </TouchableOpacity>
+                </View>
+
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Nome de usuário:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite o nome de usuário"
+                    value={userData.username}
+                    onChangeText={(text) =>
+                      setUserData({ ...userData, username: text })
+                    }
+                  />
+                </View>
+
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    E-mail (opcional):
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite o e-mail"
+                    value={userData.email}
+                    onChangeText={(text) =>
+                      setUserData({ ...userData, email: text })
+                    }
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Senha:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite a senha"
+                    secureTextEntry
+                    value={userData.password}
+                    onChangeText={(text) =>
+                      setUserData({ ...userData, password: text })
+                    }
+                  />
+                </View>
+
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Confirmar senha:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Confirme a senha"
+                    secureTextEntry
+                    value={userData.confirm_password}
+                    onChangeText={(text) =>
+                      setUserData({ ...userData, confirm_password: text })
+                    }
+                  />
+                </View>
+
+                <View className="mb-4">
+                  <View className="flex-row items-center mb-2">
+                    <TouchableOpacity
+                      className="flex-row items-center"
+                      onPress={() =>
+                        setUserData({ ...userData, is_staff: !userData.is_staff })
+                      }
+                    >
+                      <Ionicons
+                        name={userData.is_staff ? "checkbox" : "square-outline"}
+                        size={20}
+                        color="#374151"
+                      />
+                      <Text className="text-sm text-gray-700 ml-2">
+                        Administrador
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View className="flex-row items-center">
+                    <TouchableOpacity
+                      className="flex-row items-center"
+                      onPress={() =>
+                        setUserData({
+                          ...userData,
+                          is_superuser: !userData.is_superuser,
+                        })
+                      }
+                    >
+                      <Ionicons
+                        name={
+                          userData.is_superuser ? "checkbox" : "square-outline"
+                        }
+                        size={20}
+                        color="#374151"
+                      />
+                      <Text className="text-sm text-gray-700 ml-2">
+                        Super Administrador
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View className="flex-row justify-between">
+                  <TouchableOpacity
+                    className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
+                    onPress={closeCreateUserModal}
+                    disabled={creatingUser}
+                  >
+                    <Text className="text-white text-center font-semibold">
+                      Cancelar
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="bg-green-600 rounded-lg p-3 flex-1 ml-2"
+                    onPress={handleCreateUser}
+                    disabled={creatingUser}
+                  >
+                    {creatingUser ? (
+                      <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                      <Text className="text-white text-center font-semibold">
+                        Criar
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
         </Modal>
 
+        {/* Modal para Alterar Senha */}
         <Modal
           visible={showChangePassword}
           transparent={true}
           animationType="slide"
-          onRequestClose={() => setShowChangePassword(false)}
+          onRequestClose={closeChangePasswordModal}
         >
+          <View className="flex-1 justify-center items-center bg-black/50 p-4">
+             <ScrollView
+              className="w-full"
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+            <View
+              className={`bg-white rounded-lg w-full p-6 ${
+                isLarge ? "max-w-xl" : "max-w-sm"
+              }`}
+            >
+              <View className="flex-row justify-between items-center mb-4">
+                  <Text className="text-xl font-bold text-gray-900">
+                  Alterar Senha
+                  </Text>
+                  <TouchableOpacity onPress={closeChangePasswordModal}>
+                  <Ionicons name="close" size={24} color="#6b7280" />
+                  </TouchableOpacity>
+              </View>
+
+              <View className="mb-4">
+                <Text className="text-sm font-medium text-gray-700 mb-1">
+                  Senha atual:
+                </Text>
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-3 text-base"
+                  placeholder="Digite sua senha atual"
+                  secureTextEntry
+                  value={passwordData.old_password}
+                  onChangeText={(text) =>
+                    setPasswordData({ ...passwordData, old_password: text })
+                  }
+                />
+              </View>
+
+              <View className="mb-4">
+                <Text className="text-sm font-medium text-gray-700 mb-1">
+                  Nova senha:
+                </Text>
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-3 text-base"
+                  placeholder="Digite a nova senha"
+                  secureTextEntry
+                  value={passwordData.new_password}
+                  onChangeText={(text) =>
+                    setPasswordData({ ...passwordData, new_password: text })
+                  }
+                />
+              </View>
+
+              <View className="mb-6">
+                <Text className="text-sm font-medium text-gray-700 mb-1">
+                  Confirmar nova senha:
+                </Text>
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-3 text-base"
+                  placeholder="Digite novamente a nova senha"
+                  secureTextEntry
+                  value={passwordData.confirm_new_password}
+                  onChangeText={(text) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirm_new_password: text,
+                    })
+                  }
+                />
+              </View>
+
+              <View className="flex-row justify-between">
+                <TouchableOpacity
+                  className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
+                  onPress={closeChangePasswordModal}
+                  disabled={changingPassword}
+                >
+                  <Text className="text-white text-center font-semibold">
+                    Cancelar
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="bg-blue-700 rounded-lg p-3 flex-1 ml-2"
+                  onPress={handleChangePassword}
+                  disabled={changingPassword}
+                >
+                  {changingPassword ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    <Text className="text-white text-center font-semibold">
+                      Alterar
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+            </ScrollView>
+          </View>
         </Modal>
       </View>
     </SafeAreaView>

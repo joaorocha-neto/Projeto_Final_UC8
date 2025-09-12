@@ -41,7 +41,6 @@ export interface MarcarComoLimpaData {
   observacoes?: string;
 }
 
-
 export async function getSalas(filtros?: {
   localizacao?: string;
   status_limpeza?: string;
@@ -69,7 +68,6 @@ export async function getSalas(filtros?: {
   }
 }
 
-
 export async function getSala(id: number): Promise<Sala> {
   try {
     const response = await api.get<Sala>(`/salas/${id}/`);
@@ -79,7 +77,6 @@ export async function getSala(id: number): Promise<Sala> {
     throw error;
   }
 }
-
 
 export async function createSala(salaData: CreateSalaData): Promise<Sala> {
   try {
@@ -91,8 +88,10 @@ export async function createSala(salaData: CreateSalaData): Promise<Sala> {
   }
 }
 
-
-export async function updateSala(id: number, salaData: UpdateSalaData): Promise<Sala> {
+export async function updateSala(
+  id: number,
+  salaData: UpdateSalaData,
+): Promise<Sala> {
   try {
     const response = await api.patch<Sala>(`/salas/${id}/`, salaData);
     return response.data;
@@ -101,7 +100,6 @@ export async function updateSala(id: number, salaData: UpdateSalaData): Promise<
     throw error;
   }
 }
-
 
 export async function deleteSala(id: number): Promise<void> {
   try {
@@ -112,15 +110,20 @@ export async function deleteSala(id: number): Promise<void> {
   }
 }
 
-
-export async function marcarComoLimpa(id: number, observacoes?: string): Promise<LimpezaRegistro> {
+export async function marcarComoLimpa(
+  id: number,
+  observacoes?: string,
+): Promise<LimpezaRegistro> {
   try {
     const data: MarcarComoLimpaData = {};
     if (observacoes) {
       data.observacoes = observacoes;
     }
 
-    const response = await api.post<LimpezaRegistro>(`/salas/${id}/marcar_como_limpa/`, data);
+    const response = await api.post<LimpezaRegistro>(
+      `/salas/${id}/marcar_como_limpa/`,
+      data,
+    );
     return response.data;
   } catch (error) {
     console.error("Erro ao marcar sala como limpa:", error);
@@ -128,8 +131,9 @@ export async function marcarComoLimpa(id: number, observacoes?: string): Promise
   }
 }
 
-
-export async function getRegistrosLimpeza(salaId?: number): Promise<LimpezaRegistro[]> {
+export async function getRegistrosLimpeza(
+  salaId?: number,
+): Promise<LimpezaRegistro[]> {
   try {
     let url = "/limpezas/";
     if (salaId) {

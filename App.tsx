@@ -1,11 +1,16 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 import { AuthProvider } from "./services/authContext";
 import AppNavigator from "./navigation/AppNavigator";
-import "./global.css"
+import "./global.css";
 
-import { useFonts, Poppins_400Regular, Poppins_500Medium, Poppins_700Bold } from "@expo-google-fonts/poppins";
+import {
+  useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
 
 export default function App() {
   const [fontsLoaded] = useFonts({

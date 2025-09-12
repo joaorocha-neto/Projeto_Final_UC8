@@ -7,7 +7,7 @@ export interface User {
   is_staff: boolean;
   is_superuser: boolean;
   groups: number;
-  profile: Profile
+  profile: Profile;
 }
 
 export interface Profile {
@@ -35,14 +35,17 @@ export interface CreateUserResponse {
   token: string;
 }
 
-
 export const getCurrentUser = async (): Promise<User> => {
   try {
     const response = await api.get("/accounts/current_user/");
     const user = response.data;
 
-    if (user.profile && user.profile.profile_picture && !user.profile.profile_picture.startsWith('http')) {
-      const baseURL = "https://zeladoria.tsr.net.br"; 
+    if (
+      user.profile &&
+      user.profile.profile_picture &&
+      !user.profile.profile_picture.startsWith("http")
+    ) {
+      const baseURL = "https://zeladoria.tsr.net.br";
       user.profile.profile_picture = `${baseURL}${user.profile.profile_picture}`;
     }
 
@@ -56,13 +59,12 @@ export const getCurrentUser = async (): Promise<User> => {
 export const setProfile = async (): Promise<Profile> => {
   try {
     const response = await api.get("accounts/profile/");
-    return response.data;  
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar perfil", error);
     throw error;
   }
 };
-
 
 export const listUsers = async (): Promise<User[]> => {
   try {
@@ -74,8 +76,9 @@ export const listUsers = async (): Promise<User[]> => {
   }
 };
 
-
-export const createUser = async (userData: CreateUserData): Promise<CreateUserResponse> => {
+export const createUser = async (
+  userData: CreateUserData,
+): Promise<CreateUserResponse> => {
   try {
     const response = await api.post("/accounts/create_user/", userData);
     return response.data;
@@ -85,8 +88,9 @@ export const createUser = async (userData: CreateUserData): Promise<CreateUserRe
   }
 };
 
-
-export const changePassword = async (passwordData: ChangePasswordData): Promise<{ message: string }> => {
+export const changePassword = async (
+  passwordData: ChangePasswordData,
+): Promise<{ message: string }> => {
   try {
     const response = await api.post("/accounts/change_password/", passwordData);
     return response.data;
