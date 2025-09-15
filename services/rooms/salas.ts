@@ -2,6 +2,7 @@ import api from "../api";
 
 export interface Sala {
   id: number;
+  imagem: string;
   nome_numero: string;
   capacidade: number;
   descricao: string;

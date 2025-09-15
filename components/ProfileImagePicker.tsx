@@ -148,14 +148,14 @@ const ProfileImagePicker: React.FC<ProfileImagePickerProps> = ({
       <TouchableOpacity
         onPress={() => setIsOptionsModalVisible(true)}
         disabled={isLoading}
-        className="px-6 py-3 rounded-xl flex-row items-center bg-blue-50 mt-3 active:bg-blue-100"
+        className="p-2 px-4 rounded-xl flex-row items-center mt-3 active:bg-blue-100"
         style={{ opacity: isLoading ? 0.6 : 1 }}
       >
-        <Text className="font-medium text-blue-600">
+        <Text className="font-medium text-azul_senac">
           {imageLoadError
             ? "Tentar Novamente"
             : currentImageUri
-              ? "Editar Foto"
+              ? "Editar"
               : "Adicionar Foto"}
         </Text>
       </TouchableOpacity>

@@ -203,7 +203,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       Alert.alert("Sucesso", "Usuário criado com sucesso!");
       closeCreateUserModal();
     } catch (error: any) {
-      Alert.alert("Erro", "Não foi possível criar o usuário");
+      if (error.response?.status === 400) {
+        Alert.alert("Erro", "A senha criada é muito fraca, tente uma mais forte");
+      }
+        else {
+          Alert.alert("Erro", "Não foi possível criar o usuário");
+        }
+      
     } finally {
       setCreatingUser(false);
     }
@@ -248,15 +254,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     currentImageUri={user.profile?.profile_picture}
                     onImageRemoved={handleImageRemoved}
                     onImageSelected={handleImageSelected}
-                    
                   />
                   <Text className="text-lg font-semibold text-gray-900 text-center mt-3">
                     {user.username}
                   </Text>
                   <Text className="text-sm text-gray-600 text-center">
                     {user.is_superuser
-                      ? "Super Administrador"
-                      : user.is_staff
                       ? "Administrador"
                       : "Usuário Comum"}
                   </Text>
@@ -264,10 +267,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">
-                    Nome de usuário:
+                    Nome:
                   </Text>
                   <Text className="text-base text-gray-900">
-                    {user.username}
+                    {user.nome}
                   </Text>
                 </View>
 
@@ -282,12 +285,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">
-                    ID do usuário:
+                    Equipe:
                   </Text>
-                  <Text className="text-base text-gray-900">{user.id}</Text>
+                  <Text className="text-base text-gray-900">{user.groups}</Text>
                 </View>
 
-                {(user.is_staff || user.is_superuser) && (
+                {(user.is_superuser) && (
                   <View className="bg-blue-50 rounded-lg p-3 mt-2">
                     <View className="flex-row items-center">
                       <Ionicons
@@ -417,8 +420,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     </Text>
                     <Text className="text-xs text-gray-500 mt-1">
                       {userItem.is_superuser
-                        ? "Super Administrador"
-                        : userItem.is_staff
                         ? "Administrador"
                         : "Usuário Comum"}
                     </Text>
@@ -520,24 +521,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </View>
 
                 <View className="mb-4">
-                  <View className="flex-row items-center mb-2">
-                    <TouchableOpacity
-                      className="flex-row items-center"
-                      onPress={() =>
-                        setUserData({ ...userData, is_staff: !userData.is_staff })
-                      }
-                    >
-                      <Ionicons
-                        name={userData.is_staff ? "checkbox" : "square-outline"}
-                        size={20}
-                        color="#374151"
-                      />
-                      <Text className="text-sm text-gray-700 ml-2">
-                        Administrador
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-
                   <View className="flex-row items-center">
                     <TouchableOpacity
                       className="flex-row items-center"
@@ -553,10 +536,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                           userData.is_superuser ? "checkbox" : "square-outline"
                         }
                         size={20}
-                        color="#374151"
+                        color="#004A8D"
                       />
                       <Text className="text-sm text-gray-700 ml-2">
-                        Super Administrador
+                      Administrador
                       </Text>
                     </TouchableOpacity>
                   </View>
