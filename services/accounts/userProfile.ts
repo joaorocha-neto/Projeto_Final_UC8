@@ -16,10 +16,11 @@ export interface Profile {
 
 export interface CreateUserData {
   username: string;
+  nome: string;
   password: string;
   confirm_password: string;
   email?: string;
-  is_staff?: boolean;
+  groups: number[];
   is_superuser?: boolean;
 }
 

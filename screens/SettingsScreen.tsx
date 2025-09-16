@@ -88,10 +88,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
   const [userData, setUserData] = useState<CreateUserData>({
     username: "",
+    nome: "",
     password: "",
     confirm_password: "",
     email: "",
-    is_staff: false,
+    groups: [],
     is_superuser: false,
   });
   const [changingPassword, setChangingPassword] = useState(false);
@@ -124,10 +125,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     setShowCreateUser(false);
     setUserData({
       username: "",
+      nome: "",
       password: "",
       confirm_password: "",
       email: "",
-      is_staff: false,
+      groups: [],
       is_superuser: false,
     });
   };
@@ -204,12 +206,23 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       closeCreateUserModal();
     } catch (error: any) {
       if (error.response?.status === 400) {
-        Alert.alert("Erro", "A senha criada é muito fraca, tente uma mais forte");
+        
+        let mensagemAcumulada:string = "";
+        
+        error.response.data.password.forEach((m:string) => {
+          console.log(m);
+          mensagemAcumulada += "-  " + m + "\n\n";
+        })
+
+        console.log(mensagemAcumulada);
+
+
+        Alert.alert("Erro",  mensagemAcumulada);
       }
-        else {
-          Alert.alert("Erro", "Não foi possível criar o usuário");
-        }
-      
+      else {
+        Alert.alert("Erro", "Não foi possível criar o usuário");
+      }
+
     } finally {
       setCreatingUser(false);
     }
@@ -287,7 +300,20 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   <Text className="text-sm font-medium text-gray-700">
                     Equipe:
                   </Text>
-                  <Text className="text-base text-gray-900">{user.groups}</Text>
+
+                  {Array.isArray(user.groups) && user.groups.length > 0 ? (
+                    user.groups.map((group, index) => (
+                      <Text key={index} className="text-base text-gray-900">
+                        {group === 1
+                          ? "Zelador"
+                          : group === 2
+                            ? "Solicitante de Serviços"
+                            : "Equipe desconhecida"}
+                      </Text>
+                    ))
+                  ) : (
+                    <Text className="text-base text-gray-900">Administrador</Text>
+                  )}
                 </View>
 
                 {(user.is_superuser) && (
@@ -393,9 +419,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         >
           <View className="flex-1 justify-center items-center bg-black/50 p-4">
             <View
-              className={`bg-white rounded-lg w-full p-6 max-h-[80%] ${
-                isLarge ? "max-w-xl" : "max-w-sm"
-              }`}
+              className={`bg-white rounded-lg w-full p-6 max-h-[80%] ${isLarge ? "max-w-xl" : "max-w-sm"
+                }`}
             >
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xl font-bold text-gray-900">
@@ -447,17 +472,30 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               }}
             >
               <View
-                className={`bg-white rounded-lg w-full p-6 ${
-                  isLarge ? "max-w-xl" : "max-w-sm"
-                }`}
+                className={`bg-white rounded-lg w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"
+                  }`}
               >
                 <View className="flex-row justify-between items-center mb-4">
-                    <Text className="text-xl font-bold text-gray-900">
+                  <Text className="text-xl font-bold text-gray-900">
                     Criar Novo Usuário
-                    </Text>
-                    <TouchableOpacity onPress={closeCreateUserModal}>
+                  </Text>
+                  <TouchableOpacity onPress={closeCreateUserModal}>
                     <Ionicons name="close" size={24} color="#6b7280" />
-                    </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Nome completo (opcional):
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite o nome completo"
+                    value={userData.nome}
+                    onChangeText={(text) =>
+                      setUserData({ ...userData, nome: text })
+                    }
+                  />
                 </View>
 
                 <View className="mb-4">
@@ -521,28 +559,79 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </View>
 
                 <View className="mb-4">
-                  <View className="flex-row items-center">
-                    <TouchableOpacity
-                      className="flex-row items-center"
-                      onPress={() =>
-                        setUserData({
-                          ...userData,
-                          is_superuser: !userData.is_superuser,
-                        })
+                  <Text className="text-sm font-medium text-gray-700 mb-2">
+                    Tipo de Usuário:
+                  </Text>
+
+                  <TouchableOpacity
+                    className="flex-row items-center mb-2"
+                    onPress={() =>
+                      setUserData({
+                        ...userData,
+                        is_superuser: !userData.is_superuser,
+                        groups: !userData.is_superuser ? [] : userData.groups, // Limpa groups se marcar como admin
+                      })
+                    }
+                  >
+                    <Ionicons
+                      name={
+                        userData.is_superuser ? "checkbox" : "square-outline"
                       }
-                    >
-                      <Ionicons
-                        name={
-                          userData.is_superuser ? "checkbox" : "square-outline"
-                        }
-                        size={20}
-                        color="#004A8D"
-                      />
-                      <Text className="text-sm text-gray-700 ml-2">
+                      size={20}
+                      color="#004A8D"
+                    />
+                    <Text className="text-sm text-gray-700 ml-2">
                       Administrador
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="flex-row items-center mb-2"
+                    onPress={() => {
+                      // Se já está selecionado, remove. Se não, substitui qualquer grupo existente
+                      const newGroups = userData.groups.includes(1) ? [] : [1];
+                      setUserData({
+                        ...userData,
+                        groups: newGroups,
+                        is_superuser: false, // Desmarca administrador ao selecionar grupo
+                      });
+                    }}
+                  >
+                    <Ionicons
+                      name={
+                        userData.groups.includes(1) ? "checkbox" : "square-outline"
+                      }
+                      size={20}
+                      color="#004A8D"
+                    />
+                    <Text className="text-sm text-gray-700 ml-2">
+                      Zelador
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="flex-row items-center"
+                    onPress={() => {
+                      // Se já está selecionado, remove. Se não, substitui qualquer grupo existente
+                      const newGroups = userData.groups.includes(2) ? [] : [2];
+                      setUserData({
+                        ...userData,
+                        groups: newGroups,
+                        is_superuser: false, // Desmarca administrador ao selecionar grupo
+                      });
+                    }}
+                  >
+                    <Ionicons
+                      name={
+                        userData.groups.includes(2) ? "checkbox" : "square-outline"
+                      }
+                      size={20}
+                      color="#004A8D"
+                    />
+                    <Text className="text-sm text-gray-700 ml-2">
+                      Solicitante de Serviços
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
                 <View className="flex-row justify-between">
@@ -583,7 +672,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           onRequestClose={closeChangePasswordModal}
         >
           <View className="flex-1 justify-center items-center bg-black/50 p-4">
-             <ScrollView
+            <ScrollView
               className="w-full"
               contentContainerStyle={{
                 flexGrow: 1,
@@ -591,94 +680,93 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-            <View
-              className={`bg-white rounded-lg w-full p-6 ${
-                isLarge ? "max-w-xl" : "max-w-sm"
-              }`}
-            >
-              <View className="flex-row justify-between items-center mb-4">
+              <View
+                className={`bg-white rounded-lg w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"
+                  }`}
+              >
+                <View className="flex-row justify-between items-center mb-4">
                   <Text className="text-xl font-bold text-gray-900">
-                  Alterar Senha
+                    Alterar Senha
                   </Text>
                   <TouchableOpacity onPress={closeChangePasswordModal}>
-                  <Ionicons name="close" size={24} color="#6b7280" />
+                    <Ionicons name="close" size={24} color="#6b7280" />
                   </TouchableOpacity>
-              </View>
+                </View>
 
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Senha atual:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Digite sua senha atual"
-                  secureTextEntry
-                  value={passwordData.old_password}
-                  onChangeText={(text) =>
-                    setPasswordData({ ...passwordData, old_password: text })
-                  }
-                />
-              </View>
-
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Nova senha:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Digite a nova senha"
-                  secureTextEntry
-                  value={passwordData.new_password}
-                  onChangeText={(text) =>
-                    setPasswordData({ ...passwordData, new_password: text })
-                  }
-                />
-              </View>
-
-              <View className="mb-6">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Confirmar nova senha:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Digite novamente a nova senha"
-                  secureTextEntry
-                  value={passwordData.confirm_new_password}
-                  onChangeText={(text) =>
-                    setPasswordData({
-                      ...passwordData,
-                      confirm_new_password: text,
-                    })
-                  }
-                />
-              </View>
-
-              <View className="flex-row justify-between">
-                <TouchableOpacity
-                  className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
-                  onPress={closeChangePasswordModal}
-                  disabled={changingPassword}
-                >
-                  <Text className="text-white text-center font-semibold">
-                    Cancelar
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Senha atual:
                   </Text>
-                </TouchableOpacity>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite sua senha atual"
+                    secureTextEntry
+                    value={passwordData.old_password}
+                    onChangeText={(text) =>
+                      setPasswordData({ ...passwordData, old_password: text })
+                    }
+                  />
+                </View>
 
-                <TouchableOpacity
-                  className="bg-blue-700 rounded-lg p-3 flex-1 ml-2"
-                  onPress={handleChangePassword}
-                  disabled={changingPassword}
-                >
-                  {changingPassword ? (
-                    <ActivityIndicator size="small" color="#ffffff" />
-                  ) : (
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Nova senha:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite a nova senha"
+                    secureTextEntry
+                    value={passwordData.new_password}
+                    onChangeText={(text) =>
+                      setPasswordData({ ...passwordData, new_password: text })
+                    }
+                  />
+                </View>
+
+                <View className="mb-6">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Confirmar nova senha:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Digite novamente a nova senha"
+                    secureTextEntry
+                    value={passwordData.confirm_new_password}
+                    onChangeText={(text) =>
+                      setPasswordData({
+                        ...passwordData,
+                        confirm_new_password: text,
+                      })
+                    }
+                  />
+                </View>
+
+                <View className="flex-row justify-between">
+                  <TouchableOpacity
+                    className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
+                    onPress={closeChangePasswordModal}
+                    disabled={changingPassword}
+                  >
                     <Text className="text-white text-center font-semibold">
-                      Alterar
+                      Cancelar
                     </Text>
-                  )}
-                </TouchableOpacity>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="bg-blue-700 rounded-lg p-3 flex-1 ml-2"
+                    onPress={handleChangePassword}
+                    disabled={changingPassword}
+                  >
+                    {changingPassword ? (
+                      <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                      <Text className="text-white text-center font-semibold">
+                        Alterar
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
             </ScrollView>
           </View>
         </Modal>
