@@ -38,11 +38,15 @@ interface RoomsScreenProps {
   navigation: RoomsScreenNavigationProp;
 }
 
+// Componente principal para a tela de Salas
 const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
+  // Hook de autenticação para obter informações do usuário logado
   const { user } = useAuth();
+  // Estados para gerenciar a lista de salas e o estado de carregamento
   const [salas, setSalas] = useState<Sala[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  // Estados para controlar a visibilidade dos modais
   const [showObservacoesModal, setShowObservacoesModal] = useState(false);
   const [selectedSala, setSelectedSala] = useState<Sala | null>(null);
   const [observacoes, setObservacoes] = useState("");
@@ -50,20 +54,25 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // Estado para a sala que está sendo editada ou excluída
   const [editingSala, setEditingSala] = useState<Sala | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  // Estado para os dados do formulário de criação/edição
   const [formData, setFormData] = useState<CreateSalaData>({
     nome_numero: "",
     capacidade: 0,
     descricao: "",
     localizacao: "",
+    ativa: true,
   });
 
+  // Efeito para buscar as salas na montagem do componente
   useEffect(() => {
     fetchSalas();
   }, []);
 
+  // Função para buscar a lista de salas da API
   const fetchSalas = async () => {
     try {
       setLoading(true);
@@ -76,6 +85,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Função para atualizar a lista de salas com o gesto de "puxar para baixo"
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -88,12 +98,14 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Lida com o clique no botão "Marcar como Limpa"
   const handleMarcarComoLimpa = (sala: Sala) => {
     setSelectedSala(sala);
     setObservacoes("");
     setShowObservacoesModal(true);
   };
 
+  // Confirma a ação de marcar uma sala como limpa
   const confirmarMarcarComoLimpa = async () => {
     if (!selectedSala) return;
 
@@ -114,6 +126,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Retorna a cor do texto com base no status de limpeza
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Limpa":
@@ -125,6 +138,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Lida com o clique no botão de edição de sala
   const handleEditSala = (sala: Sala) => {
     setEditingSala(sala);
     setFormData({
@@ -132,10 +146,12 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
       capacidade: sala.capacidade,
       descricao: sala.descricao,
       localizacao: sala.localizacao,
+      ativa: sala.ativa,
     });
     setShowEditModal(true);
   };
 
+  // Lida com o clique no botão de criação de sala
   const handleCreateSala = () => {
     setEditingSala(null);
     setFormData({
@@ -143,15 +159,18 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
       capacidade: 0,
       descricao: "",
       localizacao: "",
+      ativa: true,
     });
     setShowCreateModal(true);
   };
 
+  // Lida com o clique no botão de exclusão de sala
   const handleDeleteSala = (sala: Sala) => {
     setEditingSala(sala);
     setShowDeleteConfirm(true);
   };
 
+  // Salva a sala (criação ou edição) na API
   const saveSala = async () => {
     if (
       !formData.nome_numero ||
@@ -182,6 +201,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
         capacidade: 0,
         descricao: "",
         localizacao: "",
+        ativa: true,
       });
 
       await fetchSalas();
@@ -192,12 +212,13 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Confirma a exclusão de uma sala
   const confirmDeleteSala = async () => {
     if (!editingSala) return;
 
     try {
       setDeleting(true);
-      await deleteSala(editingSala.id);
+      await deleteSala(editingSala.qr_code_id);
       Alert.alert("Sucesso", "Sala excluída com sucesso!");
       setShowDeleteConfirm(false);
       setEditingSala(null);
@@ -210,6 +231,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Formata a data e hora da última limpeza
   const displayLastCleanedTime = (utcDateTimeString: string | null): string => {
     if (!utcDateTimeString) {
       return "Nunca foi limpa";
@@ -224,11 +246,14 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Verifica se a tela é grande (para layout adaptável)
   const isLarge = Dimensions.get("screen").width >= 768;
 
   return (
+    // Contêiner principal da tela
     <SafeAreaView className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
+        {/* Cabeçalho da tela */}
         <View className="bg-azul_senac rounded-xl p-6 mb-4 mt-4">
           <View className="flex-row justify-between items-center">
             <View className="flex-1">
@@ -240,6 +265,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
               </Text>
             </View>
             <View className="flex-row items-center justify-end">
+              {/* Botão para criar nova sala (visível apenas para superusuários) */}
               {user?.is_superuser && (
                 <TouchableOpacity
                   className="bg-white rounded-full"
@@ -256,12 +282,14 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           </View>
         </View>
 
+        {/* Exibe o indicador de carregamento ou a lista de salas */}
         {loading ? (
           <View className="flex-1 justify-center items-center">
             <ActivityIndicator size="large" color="#2563EB" />
             <Text className="text-gray-600 mt-4">Carregando salas...</Text>
           </View>
         ) : (
+          /* Lista rolável de salas */
           <ScrollView
             className="flex-1 mb-6"
             refreshControl={
@@ -273,12 +301,15 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
               />
             }
           >
+            {/* Mapeia a lista de salas para exibir cada cartão */}
             {salas.map((sala) => (
+              /* Cartão de uma sala individual */
               <View key={sala.id} className="bg-gray-100 rounded-lg p-4 mb-4">
                 <View className="flex-row justify-between items-start mb-2">
                   <Text className="text-xl font-semibold text-azul_senac flex-1">
                     {sala.nome_numero}
                   </Text>
+                  {/* Etiqueta de status de limpeza (Limpa ou Pendente) */}
                   <View
                     className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100" : "bg-red-100"}`}
                   >
@@ -290,6 +321,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                   </View>
                 </View>
 
+                {/* Detalhes da sala */}
                 <Text className="text-base text-gray-700 mb-1">
                   Capacidade: {sala.capacidade} pessoas
                 </Text>
@@ -323,7 +355,9 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Seção de botões de ação */}
                 <View className="border-t border-gray-200 pt-2 mt-2">
+                  {/* Botão para marcar a sala como limpa */}
                   <TouchableOpacity
                     className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
                     onPress={() => handleMarcarComoLimpa(sala)}
@@ -347,8 +381,10 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                     </View>
                   </TouchableOpacity>
 
+                  {/* Botões de administrador (visíveis apenas para superusuários) */}
                   {user?.is_superuser && (
                     <View className="flex-row mt-2 space-x-2 gap-2">
+                      {/* Botão de edição */}
                       <TouchableOpacity
                         className="bg-laranja_senac rounded-lg p-2 flex-1"
                         onPress={() => handleEditSala(sala)}
@@ -358,6 +394,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                         </Text>
                       </TouchableOpacity>
 
+                      {/* Botão de exclusão */}
                       <TouchableOpacity
                         className="bg-red-700 rounded-lg p-2 flex-1"
                         onPress={() => handleDeleteSala(sala)}
@@ -374,6 +411,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           </ScrollView>
         )}
 
+        {/* Modal: Marcar como Limpa */}
         <Modal
           visible={showObservacoesModal}
           transparent={true}
@@ -394,6 +432,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </Text>
               )}
 
+              {/* Campo para Observações */}
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Observações (opcional):
@@ -408,6 +447,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 />
               </View>
 
+              {/* Botões do modal de observações */}
               <View className="flex-row justify-between">
                 <TouchableOpacity
                   className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
@@ -441,6 +481,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           </View>
         </Modal>
 
+        {/* Modal: Criar ou Editar Sala */}
         <Modal
           visible={showCreateModal || showEditModal}
           transparent={true}
@@ -458,6 +499,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 {editingSala ? "Editar Sala" : "Criar Nova Sala"}
               </Text>
 
+              {/* Formulário de criação/edição */}
               <View className="mb-4">
                 <Text className="text-sm font-medium text-gray-700 mb-1">
                   Nome/Número da Sala:
@@ -520,6 +562,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 />
               </View>
 
+              {/* Botões do modal de criação/edição */}
               <View className="flex-row justify-between">
                 <TouchableOpacity
                   className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
@@ -532,6 +575,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                       capacidade: 0,
                       descricao: "",
                       localizacao: "",
+                      ativa: true,
                     });
                   }}
                   disabled={saving}
@@ -559,6 +603,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
           </View>
         </Modal>
 
+        {/* Modal: Confirmação de Exclusão */}
         <Modal
           visible={showDeleteConfirm}
           transparent={true}
@@ -584,6 +629,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 Esta ação não pode ser desfeita.
               </Text>
 
+              {/* Botões do modal de exclusão */}
               <View className="flex-row justify-between">
                 <TouchableOpacity
                   className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"

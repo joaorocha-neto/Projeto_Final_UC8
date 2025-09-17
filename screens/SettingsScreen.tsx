@@ -206,10 +206,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       closeCreateUserModal();
     } catch (error: any) {
       if (error.response?.status === 400) {
-        
-        let mensagemAcumulada:string = "";
-        
-        error.response.data.password.forEach((m:string) => {
+
+        let mensagemAcumulada: string = "";
+
+        error.response.data.password.forEach((m: string) => {
           console.log(m);
           mensagemAcumulada += "-  " + m + "\n\n";
         })
@@ -217,7 +217,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         console.log(mensagemAcumulada);
 
 
-        Alert.alert("Erro",  mensagemAcumulada);
+        Alert.alert("Erro", mensagemAcumulada);
       }
       else {
         Alert.alert("Erro", "Não foi possível criar o usuário");
@@ -302,15 +302,19 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
 
                   {Array.isArray(user.groups) && user.groups.length > 0 ? (
-                    user.groups.map((group, index) => (
-                      <Text key={index} className="text-base text-gray-900">
-                        {group === 1
-                          ? "Zelador"
-                          : group === 2
-                            ? "Solicitante de Serviços"
-                            : "Equipe desconhecida"}
-                      </Text>
-                    ))
+                    user.groups.includes(1) && user.groups.includes(2) ? (
+                      <Text className="text-base text-gray-900">Administrador Pleno</Text>
+                    ) : (
+                      user.groups.map((group, index) => (
+                        <Text key={index} className="text-base text-gray-900">
+                          {group === 1
+                            ? "Zelador"
+                            : group === 2
+                              ? "Solicitante de Serviços"
+                              : "Equipe desconhecida"}
+                        </Text>
+                      ))
+                    )
                   ) : (
                     <Text className="text-base text-gray-900">Administrador</Text>
                   )}
@@ -569,7 +573,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                       setUserData({
                         ...userData,
                         is_superuser: !userData.is_superuser,
-                        groups: !userData.is_superuser ? [] : userData.groups, // Limpa groups se marcar como admin
                       })
                     }
                   >
@@ -588,12 +591,16 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   <TouchableOpacity
                     className="flex-row items-center mb-2"
                     onPress={() => {
-                      // Se já está selecionado, remove. Se não, substitui qualquer grupo existente
-                      const newGroups = userData.groups.includes(1) ? [] : [1];
+                      const newGroups = [...userData.groups];
+                      const index = newGroups.indexOf(1);
+                      if (index > -1) {
+                        newGroups.splice(index, 1);
+                      } else {
+                        newGroups.push(1);
+                      }
                       setUserData({
                         ...userData,
                         groups: newGroups,
-                        is_superuser: false, // Desmarca administrador ao selecionar grupo
                       });
                     }}
                   >
@@ -612,12 +619,16 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   <TouchableOpacity
                     className="flex-row items-center"
                     onPress={() => {
-                      // Se já está selecionado, remove. Se não, substitui qualquer grupo existente
-                      const newGroups = userData.groups.includes(2) ? [] : [2];
+                      const newGroups = [...userData.groups];
+                      const index = newGroups.indexOf(2);
+                      if (index > -1) {
+                        newGroups.splice(index, 1);
+                      } else {
+                        newGroups.push(2);
+                      }
                       setUserData({
                         ...userData,
                         groups: newGroups,
-                        is_superuser: false, // Desmarca administrador ao selecionar grupo
                       });
                     }}
                   >

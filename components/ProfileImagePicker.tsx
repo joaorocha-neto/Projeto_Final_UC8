@@ -13,7 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
-interface ProfileImagePickerProps {
+export interface ProfileImagePickerProps {
   currentImageUri?: string | null;
   onImageSelected: (imageUri: string) => any;
   onImageRemoved: () => void;

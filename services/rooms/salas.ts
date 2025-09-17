@@ -1,15 +1,20 @@
 import api from "../api";
 
 export interface Sala {
-  id: number;
-  imagem: string;
-  nome_numero: string;
-  capacidade: number;
-  descricao: string;
-  localizacao: string;
-  status_limpeza: string;
-  ultima_limpeza_data_hora: string | null;
-  ultima_limpeza_funcionario: string | null;
+    id: number;
+		qr_code_id: string; 
+		nome_numero: string; 
+		capacidade: number;
+		validade_limpeza_horas: number;
+		descricao: string;
+		instrucoes: string | null;
+		localizacao: string;
+		ativa: boolean;
+		imagem: string | null;
+		responsaveis: number[];
+		status_limpeza: string;
+		ultima_limpeza_data_hora: string | null; 
+		ultima_limpeza_funcionario: string | null; 
 }
 
 export interface CreateSalaData {
@@ -17,6 +22,7 @@ export interface CreateSalaData {
   capacidade: number;
   descricao: string;
   localizacao: string;
+  ativa: boolean;
 }
 
 export interface UpdateSalaData {
@@ -80,10 +86,20 @@ export async function getSala(id: number): Promise<Sala> {
 }
 
 export async function createSala(salaData: CreateSalaData): Promise<Sala> {
+  const novaSala = new FormData()
+    novaSala.append("nome_numero", salaData.nome_numero)
+    novaSala.append("capacidade", salaData.capacidade.toString())
+    novaSala.append("descricao", salaData.descricao)
+    novaSala.append("localizacao", salaData.localizacao)
   try {
-    const response = await api.post<Sala>("/salas/", salaData);
+    const response = await api.post<Sala>("/salas/", novaSala,{
+      headers : {
+        "Content-Type" : "multipart/form-data"
+      }
+    });
     return response.data;
   } catch (error) {
+    console.log(error)
     console.error("Erro ao criar sala:", error);
     throw error;
   }
@@ -102,9 +118,9 @@ export async function updateSala(
   }
 }
 
-export async function deleteSala(id: number): Promise<void> {
+export async function deleteSala(qr_code_id: string): Promise<void> {
   try {
-    await api.delete(`/salas/${id}/`);
+    await api.delete(`/salas/${qr_code_id}/`);
   } catch (error) {
     console.error("Erro ao excluir sala:", error);
     throw error;
