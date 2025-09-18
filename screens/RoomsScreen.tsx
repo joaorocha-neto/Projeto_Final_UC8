@@ -10,6 +10,7 @@ import {
   Modal,
   RefreshControl,
   Dimensions,
+  ImageBackground,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
@@ -304,112 +305,124 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             {/* Mapeia a lista de salas para exibir cada cartão */}
             {salas.map((sala) => (
               /* Cartão de uma sala individual */
-              <View key={sala.id} className="bg-gray-100 rounded-lg p-4 mb-4">
-                <View className="flex-row justify-between items-start mb-2">
-                  <Text className="text-xl font-semibold text-azul_senac flex-1">
-                    {sala.nome_numero}
-                  </Text>
-                  {/* Etiqueta de status de limpeza (Limpa ou Pendente) */}
-                  <View
-                    className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100" : "bg-red-100"}`}
-                  >
-                    <Text
-                      className={`text-xs font-medium ${getStatusColor(sala.status_limpeza)}`}
-                    >
-                      {sala.status_limpeza}
+              <View key={sala.qr_code_id} className="bg-gray-100 rounded-xl overflow-hidden mb-4 border border-gray-200">
+
+                {/* --- SEÇÃO DA IMAGEM (CABEÇALHO) --- */}
+                <ImageBackground
+                  source={{ uri: "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D" }}
+                  className="h-48 w-full p-4 justify-between" // Altura definida para a imagem
+                  resizeMode="cover"
+                >
+                  {/* Overlay escuro para melhorar o contraste do texto branco */}
+                  <View className="absolute inset-0 bg-black/40" />
+
+                  {/* Nome da Sala e Status */}
+                  <View className="flex-row justify-between items-start">
+                    <Text className="text-2xl font-bold text-white flex-1 shadow">
+                      {sala.nome_numero}
                     </Text>
+
+                    <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100/90" : "bg-red-100/90"}`}>
+                      <Text className={`text-xs font-bold ${sala.status_limpeza === "Limpa" ? "text-green-900" : "text-red-900"}`}>
+                        {sala.status_limpeza}
+                      </Text>
+                    </View>
                   </View>
-                </View>
 
-                {/* Detalhes da sala */}
-                <Text className="text-base text-gray-700 mb-1">
-                  Capacidade: {sala.capacidade} pessoas
-                </Text>
+                  {/* Detalhes que ficam sobre a imagem */}
+                  <View>
+                    <View className="flex-row items-center">
+                      <Ionicons name="location" size={14} color="#FFFFFF" />
+                      <Text className="text-sm text-white ml-1.5 shadow">
+                        {sala.localizacao}
+                      </Text>
+                    </View>
+                  </View>
+                </ImageBackground>
 
-                <View className="flex-row items-center mb-1">
-                  {sala.descricao ? (
-                    <>
-                      <Ionicons name="help-outline" size={12} color="#6b7280" />
-                      <Text className="text-xs text-gray-500 ml-1">
+                {/* --- SEÇÃO DE DETALHES E AÇÕES --- */}
+                <View className="p-4">
+                  {/* Detalhes da sala */}
+                  <Text className="text-base text-gray-700 mb-2">
+                    Capacidade: {sala.capacidade} pessoas
+                  </Text>
+
+                  {sala.descricao && (
+                    <View className="flex-row items-center mb-2">
+                      <Ionicons name="help-outline" size={14} color="#6b7280" />
+                      <Text className="text-sm text-gray-600 ml-1.5">
                         {sala.descricao}
                       </Text>
-                    </>
-                  ) : null}
-                </View>
-
-                <View className="flex-row items-center mb-1">
-                  <Ionicons name="time" size={12} color="#004A8D" />
-                  <Text className="text-xs text-gray-500 ml-1">
-                    Ultima limpeza:{" "}
-                    {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}{" "}
-                    {sala.ultima_limpeza_funcionario ? (
-                      <Text>por {sala.ultima_limpeza_funcionario}</Text>
-                    ) : null}
-                  </Text>
-                </View>
-
-                <View className="flex-row items-center mb-1">
-                  <Ionicons name="location" size={12} color="#F7941D" />
-                  <Text className="text-xs text-gray-500 ml-1">
-                    Localização: {sala.localizacao}
-                  </Text>
-                </View>
-
-                {/* Seção de botões de ação */}
-                <View className="border-t border-gray-200 pt-2 mt-2">
-                  {/* Botão para marcar a sala como limpa */}
-                  <TouchableOpacity
-                    className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
-                    onPress={() => handleMarcarComoLimpa(sala)}
-                    disabled={sala.status_limpeza === "Limpa"}
-                  >
-                    <View className="flex-row items-center justify-center">
-                      {sala.status_limpeza === "Limpa" && (
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={16}
-                          color="#d1d5db"
-                        />
-                      )}
-                      <Text
-                        className={`text-center font-semibold text-sm ${sala.status_limpeza === "Limpa" ? "text-gray-300" : "text-white"} ${sala.status_limpeza === "Limpa" ? "ml-1" : ""}`}
-                      >
-                        {sala.status_limpeza === "Limpa"
-                          ? "Limpa"
-                          : "Marcar como Limpa"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  {/* Botões de administrador (visíveis apenas para superusuários) */}
-                  {user?.is_superuser && (
-                    <View className="flex-row mt-2 space-x-2 gap-2">
-                      {/* Botão de edição */}
-                      <TouchableOpacity
-                        className="bg-laranja_senac rounded-lg p-2 flex-1"
-                        onPress={() => handleEditSala(sala)}
-                      >
-                        <Text className="text-white text-center font-semibold text-xs">
-                          Editar
-                        </Text>
-                      </TouchableOpacity>
-
-                      {/* Botão de exclusão */}
-                      <TouchableOpacity
-                        className="bg-red-700 rounded-lg p-2 flex-1"
-                        onPress={() => handleDeleteSala(sala)}
-                      >
-                        <Text className="text-white text-center font-semibold text-xs">
-                          Excluir
-                        </Text>
-                      </TouchableOpacity>
                     </View>
                   )}
+
+                  <View className="flex-row items-center mb-4">
+                    <Ionicons name="time" size={14} color="#004A8D" />
+                    <Text className="text-sm text-gray-600 ml-1.5">
+                      Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
+                      {sala.ultima_limpeza_funcionario && <Text> por {sala.ultima_limpeza_funcionario}</Text>}
+                    </Text>
+                  </View>
+
+                  {/* Seção de botões de ação */}
+                  <View className="border-t border-gray-200 pt-2 mt-2">
+                    {/* Botão para marcar a sala como limpa */}
+                    <TouchableOpacity
+                      className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
+                      onPress={() => handleMarcarComoLimpa(sala)}
+                      disabled={sala.status_limpeza === "Limpa"}
+                    >
+                      <View className="flex-row items-center justify-center">
+                        {sala.status_limpeza === "Limpa" && (
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={16}
+                            color="#d1d5db"
+                          />
+                        )}
+                        <Text
+                          className={`text-center font-semibold text-sm ${sala.status_limpeza === "Limpa" ? "text-gray-300" : "text-white"} ${sala.status_limpeza === "Limpa" ? "ml-1" : ""}`}
+                        >
+                          {sala.status_limpeza === "Limpa"
+                            ? "Limpa"
+                            : "Marcar como Limpa"}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    {/* Botões de administrador (visíveis apenas para superusuários) */}
+                    {user?.is_superuser && (
+                      <View className="flex-row mt-2 space-x-2 gap-2">
+                        {/* Botão de edição */}
+                        <TouchableOpacity
+                          className="bg-laranja_senac rounded-lg p-2 flex-1"
+                          onPress={() => handleEditSala(sala)}
+                        >
+                          <Text className="text-white text-center font-semibold text-xs">
+                            Editar
+                          </Text>
+                        </TouchableOpacity>
+
+                        {/* Botão de exclusão */}
+                        <TouchableOpacity
+                          className="bg-red-700 rounded-lg p-2 flex-1"
+                          onPress={() => handleDeleteSala(sala)}
+                        >
+                          <Text className="text-white text-center font-semibold text-xs">
+                            Excluir
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+
+                  </View>
                 </View>
               </View>
+
             ))}
           </ScrollView>
-        )}
+        )
+        }
 
         {/* Modal: Marcar como Limpa */}
         <Modal
@@ -661,8 +674,8 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-      </View>
-    </SafeAreaView>
+      </View >
+    </SafeAreaView >
   );
 };
 

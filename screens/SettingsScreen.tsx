@@ -154,6 +154,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       await changePassword(passwordData);
       Alert.alert("Sucesso", "Senha alterada com sucesso!");
       closeChangePasswordModal();
+      console.log("Sucesso sla")
       await refreshUser();
     } catch (error: any) {
       console.error("Erro ao alterar senha:", error);

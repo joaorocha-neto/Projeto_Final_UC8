@@ -33,7 +33,7 @@ export interface UpdateSalaData {
 }
 
 export interface LimpezaRegistro {
-  id: number;
+  qr_code_id: string; 
   sala: number;
   sala_nome: string;
   data_hora_limpeza: string;
@@ -75,9 +75,9 @@ export async function getSalas(filtros?: {
   }
 }
 
-export async function getSala(id: number): Promise<Sala> {
+export async function getSala(qr_code_id: number): Promise<Sala> {
   try {
-    const response = await api.get<Sala>(`/salas/${id}/`);
+    const response = await api.get<Sala>(`/salas/${qr_code_id}/`);
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar sala:", error);
