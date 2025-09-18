@@ -439,19 +439,32 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 {users.map((userItem) => (
                   <View
                     key={userItem.id}
-                    className="bg-gray-50 rounded-lg p-3 mb-2"
+                    className="flex-row items-center bg-gray-50 rounded-lg p-3 mb-2"
                   >
-                    <Text className="text-base font-semibold text-gray-900">
-                      {userItem.username}
-                    </Text>
-                    <Text className="text-sm text-gray-600">
-                      {userItem.email || "Sem e-mail"}
-                    </Text>
-                    <Text className="text-xs text-gray-500 mt-1">
-                      {userItem.is_superuser
-                        ? "Administrador"
-                        : "Usuário Comum"}
-                    </Text>
+                    {userItem.profile?.profile_picture ? (
+                      <Image
+                        source={{ uri: userItem.profile.profile_picture }}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View className="w-12 h-12 rounded-full mr-4 bg-gray-200 flex items-center justify-center">
+                        <Ionicons name="person" size={24} color="#6b7280" />
+                      </View>
+                    )}
+
+                    <View className="flex-1">
+                      <Text className="text-base font-semibold text-gray-900">
+                        {userItem.username}
+                      </Text>
+                      <Text className="text-sm text-gray-600">
+                        {userItem.email || "Sem e-mail"}
+                      </Text>
+                      <Text className="text-xs text-gray-500 mt-1">
+                        {userItem.is_superuser
+                          ? "Administrador"
+                          : "Usuário Comum"}
+                      </Text>
+                    </View>
                   </View>
                 ))}
               </ScrollView>

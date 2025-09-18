@@ -70,7 +70,21 @@ export const setProfile = async (): Promise<Profile> => {
 export const listUsers = async (): Promise<User[]> => {
   try {
     const response = await api.get("/accounts/list_users/");
-    return response.data;
+    const users: User[] = response.data;
+
+    const baseURL = "https://zeladoria.tsr.net.br";
+    
+    return users.map(user => {
+      if (
+        user.profile &&
+        user.profile.profile_picture &&
+        !user.profile.profile_picture.startsWith("http")
+      ) {
+        user.profile.profile_picture = `${baseURL}${user.profile.profile_picture}`;
+      }
+      return user;
+    });
+
   } catch (error: any) {
     console.error("Erro ao listar usuários:", error);
     throw error;
