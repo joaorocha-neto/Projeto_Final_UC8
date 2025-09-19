@@ -18,7 +18,7 @@ const isLarge = Dimensions.get("screen").width >= 768;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView edges={["left", "right", "top"]} className="flex-1 bg-white">
       <ScrollView className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
         <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">

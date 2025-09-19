@@ -232,7 +232,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const isLarge = Dimensions.get("screen").width >= 768;
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView edges={["left", "right", "top"]} className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
         <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
@@ -249,7 +249,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             <Text className="text-gray-600 mt-4">Carregando perfil...</Text>
           </View>
         ) : (
-          <ScrollView className="flex-1 mb-6">
+          <ScrollView className="flex-1">
             {user && (
               <View className="bg-gray-100 rounded-lg p-4 mb-4">
                 <View className="flex-row items-center mb-3">

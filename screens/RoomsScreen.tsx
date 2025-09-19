@@ -252,7 +252,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
   return (
     // Contêiner principal da tela
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView edges={["left", "right", "top"]} className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
         {/* Cabeçalho da tela */}
         <View className="bg-azul_senac rounded-xl p-6 mb-4 mt-4">
@@ -292,7 +292,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
         ) : (
           /* Lista rolável de salas */
           <ScrollView
-            className="flex-1 mb-6"
+            className="flex-1"
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -309,8 +309,8 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
 
                 {/* --- SEÇÃO DA IMAGEM (CABEÇALHO) --- */}
                 <ImageBackground
-                  source={{ uri: "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D" }}
-                  className="h-48 w-full p-4 justify-between" // Altura definida para a imagem
+                  source={{ uri: "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D" }}
+                  className="h-48 w-full p-3 justify-between"
                   resizeMode="cover"
                 >
                   {/* Overlay escuro para melhorar o contraste do texto branco */}
@@ -329,43 +329,54 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                     </View>
                   </View>
 
-                  {/* Detalhes que ficam sobre a imagem */}
-                  <View>
+                  {/* ESTRUTURA CORRIGIDA: Detalhes em formato de coluna */}
+                  {/* Usamos 'flex-col' no container principal e adicionamos um espaçamento entre os itens */}
+                  <View className="flex-col space-y-1.5">
+
+                    {/* Item 1: Capacidade */}
                     <View className="flex-row items-center">
-                      <Ionicons name="location" size={14} color="#FFFFFF" />
-                      <Text className="text-sm text-white ml-1.5 shadow">
+                      <Ionicons name="people" size={16} color="#FFFFFF" />
+                      <Text className="text-sm text-white ml-2 shadow">
+                        Capacidade: {sala.capacidade} pessoas
+                      </Text>
+                    </View>
+
+                    {/* Item 2: Descrição (condicional) */}
+                    {sala.descricao && (
+                      <View className="flex-row items-center">
+                        {/* Ícone de informação fica melhor que o de ajuda */}
+                        <Ionicons name="information-circle" size={16} color="#FFFFFF" />
+                        <Text className="text-sm text-white ml-2 shadow">
+                          {sala.descricao}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Item 3: Localização */}
+                    <View className="flex-row items-center">
+                      <Ionicons name="location" size={16} color="#FFFFFF" />
+                      <Text className="text-sm text-white ml-2 shadow">
                         {sala.localizacao}
                       </Text>
                     </View>
+
+                    {/* Item 4: Última Limpeza */}
+                    <View className="flex-row items-center">
+                      <Ionicons name="time" size={16} color="#FFFFFF" />
+                      <Text className="text-sm text-white ml-2 shadow">
+                        Última limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
+                        {sala.ultima_limpeza_funcionario && ` por ${sala.ultima_limpeza_funcionario}`}
+                      </Text>
+                    </View>
+
                   </View>
                 </ImageBackground>
 
                 {/* --- SEÇÃO DE DETALHES E AÇÕES --- */}
                 <View className="p-4">
-                  {/* Detalhes da sala */}
-                  <Text className="text-base text-gray-700 mb-2">
-                    Capacidade: {sala.capacidade} pessoas
-                  </Text>
-
-                  {sala.descricao && (
-                    <View className="flex-row items-center mb-2">
-                      <Ionicons name="help-outline" size={14} color="#6b7280" />
-                      <Text className="text-sm text-gray-600 ml-1.5">
-                        {sala.descricao}
-                      </Text>
-                    </View>
-                  )}
-
-                  <View className="flex-row items-center mb-4">
-                    <Ionicons name="time" size={14} color="#004A8D" />
-                    <Text className="text-sm text-gray-600 ml-1.5">
-                      Ultima limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
-                      {sala.ultima_limpeza_funcionario && <Text> por {sala.ultima_limpeza_funcionario}</Text>}
-                    </Text>
-                  </View>
 
                   {/* Seção de botões de ação */}
-                  <View className="border-t border-gray-200 pt-2 mt-2">
+                  <View className="border-t border-gray-200 p-1.5">
                     {/* Botão para marcar a sala como limpa */}
                     <TouchableOpacity
                       className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
