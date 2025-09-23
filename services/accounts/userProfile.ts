@@ -57,12 +57,39 @@ export const getCurrentUser = async (): Promise<User> => {
   }
 };
 
-export const setProfile = async (): Promise<Profile> => {
+export const setProfile = async (imageUri: string): Promise<Profile> => {
   try {
-    const response = await api.get("accounts/profile/");
+    // 1. Criar um objeto FormData para encapsular o arquivo
+    const formData = new FormData();
+
+    // Extrai o nome do arquivo a partir da URI local
+    const filename = imageUri.split('/').pop();
+    
+    // Tenta adivinhar o tipo do arquivo (ex: 'image/jpeg')
+    const match = /\.(\w+)$/.exec(filename!);
+    const type = match ? `image/${match[1]}` : `image`;
+
+    // 2. Adicionar a imagem ao FormData
+    // O nome do campo ('profile_picture') deve ser exatamente o que sua API espera
+    formData.append('profile_picture', {
+      uri: imageUri,
+      name: filename,
+      type,
+    } as any); // O 'as any' é usado para compatibilidade com a tipagem do React Native
+
+    // 3. Enviar os dados usando o método PUT e o cabeçalho correto
+    const response = await api.put("accounts/profile/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // Sua lógica de prefixar a URL já está na função getCurrentUser,
+    // então não precisa ser refeita aqui.
     return response.data;
+
   } catch (error) {
-    console.error("Erro ao buscar perfil", error);
+    console.error("Erro ao ATUALIZAR o perfil:", error);
     throw error;
   }
 };
@@ -114,3 +141,4 @@ export const changePassword = async (
     throw error;
   }
 };
+

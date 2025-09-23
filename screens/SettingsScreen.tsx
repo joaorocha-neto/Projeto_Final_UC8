@@ -38,6 +38,7 @@ interface SettingsScreenProps {
 }
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
+  {/* Definição do Componente e Hooks de Estado */}
   const { logout, user, refreshUser, updateProfile } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
@@ -54,6 +55,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
   const [IsUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
+  {/* Função para lidar com a seleção de nova imagem de perfil */}
   const handleImageSelected = async (imageUri: string) => {
     setIsUpdatingProfile(true);
     try {
@@ -70,6 +72,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     }
   };
 
+  {/* Função para lidar com a remoção da imagem de perfil */}
   const handleImageRemoved = async () => {
     setIsUpdatingProfile(true);
     try {
@@ -98,6 +101,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [changingPassword, setChangingPassword] = useState(false);
   const [creatingUser, setCreatingUser] = useState(false);
 
+  {/* Funções para logs de sucesso e erro no carregamento da imagem */}
   const handleImageLoadSuccess = () => {
     const Perfil =
       "SUCESSO: Imagem de perfil foi puxada e carregada corretamente da API.";
@@ -112,6 +116,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     setImageError(true);
   };
 
+  {/* Funções para fechar os modais e resetar os estados */}
   const closeChangePasswordModal = () => {
     setShowChangePassword(false);
     setPasswordData({
@@ -134,6 +139,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     });
   };
 
+  {/* Função para alterar a senha do usuário */}
   const handleChangePassword = async () => {
     if (
       !passwordData.old_password ||
@@ -172,19 +178,25 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     }
   };
 
+  {/* Função para buscar e exibir a lista de usuários */}
   const handleListUsers = async () => {
-    try {
-      setLoadingUsers(true);
-      const usersList = await listUsers();
-      setUsers(usersList);
-      setShowUserList(true);
-    } catch (error: any) {
-      Alert.alert("Erro", "Não foi possível carregar a lista de usuários");
-    } finally {
-      setLoadingUsers(false);
-    }
-  };
+  try {
+    setLoadingUsers(true);
+    const usersList = await listUsers();
 
+    // ADICIONE ESTA LINHA PARA VER OS DADOS
+    console.log("Dados recebidos da API de lista:", JSON.stringify(usersList, null, 2));
+
+    setUsers(usersList);
+    setShowUserList(true);
+  } catch (error: any) {
+    Alert.alert("Erro", "Não foi possível carregar a lista de usuários");
+  } finally {
+    setLoadingUsers(false);
+  }
+};
+
+  {/* Função para criar um novo usuário */}
   const handleCreateUser = async () => {
     if (
       !userData.username ||
@@ -230,10 +242,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   const isLarge = Dimensions.get("screen").width >= 768;
-
+  
+  {/* Início da Renderização do Componente Visual (JSX) */}
   return (
     <SafeAreaView edges={["left", "right", "top"]} className="flex-1 bg-white">
       <View className={`flex-1 px-4 ${isLarge ? "mx-8" : "mx-0"}`}>
+        {/* Cabeçalho da Página de Perfil */}
         <View className="bg-azul_senac rounded-xl p-6 mb-6 mt-4">
           <Text className="text-3xl font-bold text-white text-center">
             Perfil do Usuário
@@ -243,6 +257,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           </Text>
         </View>
 
+        {/* Exibição de Carregamento enquanto os dados do usuário não chegam */}
         {!user ? (
           <View className="flex-1 justify-center items-center">
             <ActivityIndicator size="large" color="#2563EB" />
@@ -251,7 +266,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         ) : (
           <ScrollView className="flex-1">
             {user && (
+              /* Card de Informações Pessoais do Usuário */
               <View className="bg-gray-100 rounded-lg p-4 mb-4">
+                {/* Título do Card de Informações */}
                 <View className="flex-row items-center mb-3">
                   <Ionicons
                     name="information-circle"
@@ -263,6 +280,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Componente para Seleção e Exibição da Foto de Perfil */}
                 <View className="items-center mb-4">
                   <ProfileImagePicker
                     currentImageUri={user.profile?.profile_picture}
@@ -279,6 +297,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Campo de Nome do Usuário */}
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">
                     Nome:
@@ -288,6 +307,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Campo de E-mail do Usuário */}
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">
                     E-mail:
@@ -297,6 +317,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Campo de Equipe/Grupo do Usuário */}
                 <View className="mb-2">
                   <Text className="text-sm font-medium text-gray-700">
                     Equipe:
@@ -321,6 +342,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   )}
                 </View>
 
+                {/* Selo de Administrador (visível apenas para superusuários) */}
                 {(user.is_superuser) && (
                   <View className="bg-blue-50 rounded-lg p-3 mt-2">
                     <View className="flex-row items-center">
@@ -338,6 +360,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               </View>
             )}
 
+            {/* Card de Gerenciamento de Usuários (Apenas Admins) */}
             {user?.is_superuser && (
               <View className="bg-gray-100 rounded-lg p-4 mb-4">
                 <View className="flex-row items-center mb-3">
@@ -347,6 +370,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </Text>
                 </View>
 
+                {/* Botão para Listar Usuários */}
                 <TouchableOpacity
                   className="bg-azul_senac rounded-lg p-3 mb-2"
                   onPress={handleListUsers}
@@ -364,6 +388,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </View>
                 </TouchableOpacity>
 
+                {/* Botão para Abrir Modal de Criação de Usuário */}
                 <TouchableOpacity
                   className="bg-laranja_senac rounded-lg p-3"
                   onPress={() => setShowCreateUser(true)}
@@ -382,6 +407,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               </View>
             )}
 
+            {/* Card de Opções de Segurança */}
             <View className="bg-gray-100 rounded-lg p-4 mb-4">
               <View className="flex-row items-center mb-3">
                 <Ionicons name="shield-checkmark" size={24} color="#111827" />
@@ -389,6 +415,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   Segurança
                 </Text>
               </View>
+              {/* Botão para Alterar Senha */}
               <TouchableOpacity
                 className="bg-red-700 rounded-lg p-3 mb-2"
                 onPress={() => setShowChangePassword(true)}
@@ -402,6 +429,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            {/* Botão de Logout/Sair da Conta */}
             <View className="w-full max-w-xs self-center mb-6">
               <TouchableOpacity
                 className="bg-red-700 rounded-lg p-4"
@@ -415,7 +443,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           </ScrollView>
         )}
 
-        {/* Modal para Listar Usuários */}
+        {/* Modal para Exibir a Lista de Usuários */}
         <Modal
           visible={showUserList}
           transparent={true}
@@ -427,6 +455,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               className={`bg-white rounded-lg w-full p-6 max-h-[80%] ${isLarge ? "max-w-xl" : "max-w-sm"
                 }`}
             >
+              {/* Cabeçalho do Modal de Lista de Usuários */}
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xl font-bold text-gray-900">
                   Lista de Usuários
@@ -436,8 +465,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
+              {/* Lista Rolável de Usuários */}
               <ScrollView>
                 {users.map((userItem) => (
+                  /* Item Individual da Lista de Usuários */
                   <View
                     key={userItem.id}
                     className="flex-row items-center bg-gray-50 rounded-lg p-3 mb-2"
@@ -445,6 +476,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     {userItem.profile?.profile_picture ? (
                       <Image
                         source={{ uri: userItem.profile.profile_picture }}
+                        className="w-12 h-12 rounded-full mr-4"
                         resizeMode="cover"
                       />
                     ) : (
@@ -473,7 +505,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           </View>
         </Modal>
 
-        {/* Modal para Criar Usuário */}
+        {/* Modal para o Formulário de Criação de Novo Usuário */}
         <Modal
           visible={showCreateUser}
           transparent={true}
@@ -493,6 +525,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 className={`bg-white rounded-lg w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"
                   }`}
               >
+                {/* Cabeçalho do Modal de Criação */}
                 <View className="flex-row justify-between items-center mb-4">
                   <Text className="text-xl font-bold text-gray-900">
                     Criar Novo Usuário
@@ -502,6 +535,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
 
+                {/* Campo de Nome Completo */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Nome completo (opcional):
@@ -516,6 +550,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Campo de Nome de Usuário */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Nome de usuário:
@@ -530,6 +565,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Campo de E-mail */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     E-mail (opcional):
@@ -546,6 +582,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Campo de Senha */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Senha:
@@ -561,6 +598,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Campo de Confirmação de Senha */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Confirmar senha:
@@ -576,6 +614,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Seção de Seleção de Tipo/Grupo de Usuário */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-2">
                     Tipo de Usuário:
@@ -658,7 +697,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-
+                
+                {/* Botões de Ação do Modal (Cancelar/Criar) */}
                 <View className="flex-row justify-between">
                   <TouchableOpacity
                     className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"
@@ -689,7 +729,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           </View>
         </Modal>
 
-        {/* Modal para Alterar Senha */}
+        {/* Modal para o Formulário de Alteração de Senha */}
         <Modal
           visible={showChangePassword}
           transparent={true}
@@ -709,6 +749,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 className={`bg-white rounded-lg w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"
                   }`}
               >
+                {/* Cabeçalho do Modal de Alteração de Senha */}
                 <View className="flex-row justify-between items-center mb-4">
                   <Text className="text-xl font-bold text-gray-900">
                     Alterar Senha
@@ -717,7 +758,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     <Ionicons name="close" size={24} color="#6b7280" />
                   </TouchableOpacity>
                 </View>
-
+                
+                {/* Campo de Senha Atual */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Senha atual:
@@ -732,7 +774,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     }
                   />
                 </View>
-
+                
+                {/* Campo de Nova Senha */}
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Nova senha:
@@ -748,6 +791,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   />
                 </View>
 
+                {/* Campo de Confirmação da Nova Senha */}
                 <View className="mb-6">
                   <Text className="text-sm font-medium text-gray-700 mb-1">
                     Confirmar nova senha:
@@ -765,7 +809,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     }
                   />
                 </View>
-
+                
+                {/* Botões de Ação do Modal (Cancelar/Alterar) */}
                 <View className="flex-row justify-between">
                   <TouchableOpacity
                     className="bg-gray-500 rounded-lg p-3 flex-1 mr-2"

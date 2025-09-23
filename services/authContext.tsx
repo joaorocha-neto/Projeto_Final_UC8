@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getToken, saveToken, removeToken } from "./authStorage";
-import { getCurrentUser, User } from "./accounts/userProfile";
+// 1. IMPORTE A FUNÇÃO 'setProfile' AQUI
+import { getCurrentUser, User, setProfile } from "./accounts/userProfile";
 import api from "./api";
 
 interface AuthContextData {
@@ -27,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function checkAuthState() {
+    // ... (sem alterações aqui)
     try {
       setIsLoading(true);
       const token = await getToken();
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function login(token: string) {
+    // ... (sem alterações aqui)
     try {
       await saveToken(token);
 
@@ -77,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function logout() {
+    // ... (sem alterações aqui)
     try {
       await removeToken();
       setUser(null);
@@ -88,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function refreshUser() {
+    // ... (sem alterações aqui)
     try {
       const userData = await getCurrentUser();
       setUser(userData);
@@ -98,41 +103,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // A função que estava faltando
+  // 2. SUBSTITUA SUA FUNÇÃO 'updateProfile' POR ESTA VERSÃO CORRIGIDA
   async function updateProfile(
     imageUri: string | null,
   ): Promise<{ success: boolean; error?: string }> {
     try {
       if (imageUri) {
-        const formData = new FormData();
-        formData.append("profile_picture", {
-          uri: imageUri,
-          name: "profile_pic.jpg",
-          type: "image/jpeg",
-        } as any);
-
-        await api.patch("accounts/profile/", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        // AQUI ESTÁ A MUDANÇA PRINCIPAL
+        // Agora chamamos a função centralizada que sabe como fazer o upload
+        await setProfile(imageUri);
       } else {
-        await api.patch("accounts/profile/", { profile_picture: null });
+        // Para remover a foto, enviamos um valor nulo para o campo.
+        // Usamos PUT para consistência com a função de upload.
+        await api.put("accounts/profile/", { profile_picture: null });
       }
 
-      // Atualiza os dados do usuário no estado
+      // Esta parte já estava correta: buscar os dados atualizados após a mudança
       await refreshUser();
 
-      return { success: true }; // Retorna sucesso
+      return { success: true };
     } catch (error: any) {
-      console.error("Erro ao atualizar o perfil:", error);
+      console.error("Erro ao atualizar o perfil:", error.response?.data || error);
       let errorMessage = "Erro desconhecido ao atualizar a foto de perfil";
       if (error.response?.data?.profile_picture) {
         errorMessage = error.response.data.profile_picture.join(" ");
       } else if (error.response?.data?.detail) {
         errorMessage = error.response.data.detail;
       }
-      return { success: false, error: errorMessage }; // Retorna o erro
+      return { success: false, error: errorMessage };
     }
   }
 
@@ -145,7 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         refreshUser,
-        updateProfile, // Agora a função existe e pode ser passada
+        updateProfile, // A função agora está correta e simplificada
       }}
     >
       {children}
