@@ -29,7 +29,7 @@ import { useAuth } from "../services/authContext";
 import { Ionicons } from "@expo/vector-icons";
 import { parseISO, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-
+import * as ImagePicker from "expo-image-picker";
 type RoomsScreenNavigationProp = BottomTabNavigationProp<
   Record<(typeof tabRoutes)[number]["name"], undefined>,
   "Rooms"
@@ -38,6 +38,37 @@ type RoomsScreenNavigationProp = BottomTabNavigationProp<
 interface RoomsScreenProps {
   navigation: RoomsScreenNavigationProp;
 }
+
+
+const getImageUrl = (imageUrl: string | null | undefined): string | null => {
+
+  if (!imageUrl || imageUrl.trim() === '') {
+    return null;
+  }
+
+  if (imageUrl.includes('10.1.1.210')) {
+    const correctedUrl = imageUrl.replace('http://10.1.1.210', 'https://zeladoria.tsr.net.br');
+    return correctedUrl;
+  }
+
+  if (imageUrl.startsWith('https://zeladoria.tsr.net.br')) {
+    return imageUrl;
+  }
+
+  if (imageUrl.startsWith('http')) {
+    return imageUrl;
+  }
+
+  if (imageUrl.startsWith('/')) {
+    const fullUrl = `https://zeladoria.tsr.net.br${imageUrl}`;
+    return fullUrl;
+  }
+
+  const fullUrl = `https://zeladoria.tsr.net.br/${imageUrl}`;
+  return fullUrl;
+};
+
+
 
 // Componente principal para a tela de Salas
 const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
@@ -303,134 +334,140 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
             }
           >
             {/* Mapeia a lista de salas para exibir cada cartão */}
-            {salas.map((sala) => (
-              /* Cartão de uma sala individual */
-              <View key={sala.qr_code_id} className="bg-gray-100 rounded-xl overflow-hidden mb-4 border border-gray-200">
+            {salas.map((sala) => {
+              const imageUrl = getImageUrl(sala.imagem); // Correção: use 'sala.imagem'
 
-                {/* --- SEÇÃO DA IMAGEM (CABEÇALHO) --- */}
-                <ImageBackground
-                  source={{ uri: "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D" }}
-                  className="h-48 w-full p-3 justify-between"
-                  resizeMode="cover"
-                >
-                  {/* Overlay escuro para melhorar o contraste do texto branco */}
-                  <View className="absolute inset-0 bg-black/40" />
+              return (
+                /* Cartão de uma sala individual */
+                <View key={sala.qr_code_id} className="bg-gray-100 rounded-xl overflow-hidden mb-4 border border-gray-200">
 
-                  {/* Nome da Sala e Status */}
-                  <View className="flex-row justify-between items-start">
-                    <Text className="text-2xl font-bold text-white flex-1 shadow">
-                      {sala.nome_numero}
-                    </Text>
+                  {/* --- SEÇÃO DA IMAGEM (CABEÇALHO) --- */}
+                  <ImageBackground
+                    source={
+                      imageUrl
+                        ? { uri: imageUrl }
+                        : { uri: 'https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D' }
+                    }
+                    className="h-48 w-full p-3 justify-between"
+                    resizeMode="cover"
+                  >
+                    {/* Overlay escuro para melhorar o contraste do texto branco */}
+                    <View className="absolute inset-0 bg-black/40" />
 
-                    <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100/90" : "bg-red-100/90"}`}>
-                      <Text className={`text-xs font-bold ${sala.status_limpeza === "Limpa" ? "text-green-900" : "text-red-900"}`}>
-                        {sala.status_limpeza}
+                    {/* Nome da Sala e Status */}
+                    <View className="flex-row justify-between items-start">
+                      <Text className="text-2xl font-bold text-white flex-1 shadow">
+                        {sala.nome_numero}
                       </Text>
-                    </View>
-                  </View>
 
-                  {/* ESTRUTURA CORRIGIDA: Detalhes em formato de coluna */}
-                  {/* Usamos 'flex-col' no container principal e adicionamos um espaçamento entre os itens */}
-                  <View className="flex-col space-y-1.5">
-
-                    {/* Item 1: Capacidade */}
-                    <View className="flex-row items-center">
-                      <Ionicons name="people" size={16} color="#FFFFFF" />
-                      <Text className="text-sm text-white ml-2 shadow">
-                        Capacidade: {sala.capacidade} pessoas
-                      </Text>
+                      <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100/90" : "bg-red-100/90"}`}>
+                        <Text className={`text-xs font-bold ${sala.status_limpeza === "Limpa" ? "text-green-900" : "text-red-900"}`}>
+                          {sala.status_limpeza}
+                        </Text>
+                      </View>
                     </View>
 
-                    {/* Item 2: Descrição (condicional) */}
-                    {sala.descricao && (
+                    {/* Usamos 'flex-col' no container principal e adicionamos um espaçamento entre os itens */}
+                    <View className="flex-col space-y-1.5">
+
+                      {/* Item 1: Capacidade */}
                       <View className="flex-row items-center">
-                        {/* Ícone de informação fica melhor que o de ajuda */}
-                        <Ionicons name="information-circle" size={16} color="#FFFFFF" />
+                        <Ionicons name="people" size={16} color="#FFFFFF" />
                         <Text className="text-sm text-white ml-2 shadow">
-                          {sala.descricao}
+                          Capacidade: {sala.capacidade} pessoas
                         </Text>
                       </View>
-                    )}
 
-                    {/* Item 3: Localização */}
-                    <View className="flex-row items-center">
-                      <Ionicons name="location" size={16} color="#FFFFFF" />
-                      <Text className="text-sm text-white ml-2 shadow">
-                        {sala.localizacao}
-                      </Text>
-                    </View>
+                      {/* Item 2: Descrição (condicional) */}
+                      {sala.descricao && (
+                        <View className="flex-row items-center">
+                          {/* Ícone de informação fica melhor que o de ajuda */}
+                          <Ionicons name="information-circle" size={16} color="#FFFFFF" />
+                          <Text className="text-sm text-white ml-2 shadow">
+                            {sala.descricao}
+                          </Text>
+                        </View>
+                      )}
 
-                    {/* Item 4: Última Limpeza */}
-                    <View className="flex-row items-center">
-                      <Ionicons name="time" size={16} color="#FFFFFF" />
-                      <Text className="text-sm text-white ml-2 shadow">
-                        Última limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
-                        {sala.ultima_limpeza_funcionario && ` por ${sala.ultima_limpeza_funcionario}`}
-                      </Text>
-                    </View>
-
-                  </View>
-                </ImageBackground>
-
-                {/* --- SEÇÃO DE DETALHES E AÇÕES --- */}
-                <View className="p-4">
-
-                  {/* Seção de botões de ação */}
-                  <View className="border-t border-gray-200 p-1.5">
-                    {/* Botão para marcar a sala como limpa */}
-                    <TouchableOpacity
-                      className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
-                      onPress={() => handleMarcarComoLimpa(sala)}
-                      disabled={sala.status_limpeza === "Limpa"}
-                    >
-                      <View className="flex-row items-center justify-center">
-                        {sala.status_limpeza === "Limpa" && (
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={16}
-                            color="#d1d5db"
-                          />
-                        )}
-                        <Text
-                          className={`text-center font-semibold text-sm ${sala.status_limpeza === "Limpa" ? "text-gray-300" : "text-white"} ${sala.status_limpeza === "Limpa" ? "ml-1" : ""}`}
-                        >
-                          {sala.status_limpeza === "Limpa"
-                            ? "Limpa"
-                            : "Marcar como Limpa"}
+                      {/* Item 3: Localização */}
+                      <View className="flex-row items-center">
+                        <Ionicons name="location" size={16} color="#FFFFFF" />
+                        <Text className="text-sm text-white ml-2 shadow">
+                          {sala.localizacao}
                         </Text>
                       </View>
-                    </TouchableOpacity>
 
-                    {/* Botões de administrador (visíveis apenas para superusuários) */}
-                    {user?.is_superuser && (
-                      <View className="flex-row mt-2 space-x-2 gap-2">
-                        {/* Botão de edição */}
-                        <TouchableOpacity
-                          className="bg-laranja_senac rounded-lg p-2 flex-1"
-                          onPress={() => handleEditSala(sala)}
-                        >
-                          <Text className="text-white text-center font-semibold text-xs">
-                            Editar
-                          </Text>
-                        </TouchableOpacity>
-
-                        {/* Botão de exclusão */}
-                        <TouchableOpacity
-                          className="bg-red-700 rounded-lg p-2 flex-1"
-                          onPress={() => handleDeleteSala(sala)}
-                        >
-                          <Text className="text-white text-center font-semibold text-xs">
-                            Excluir
-                          </Text>
-                        </TouchableOpacity>
+                      {/* Item 4: Última Limpeza */}
+                      <View className="flex-row items-center">
+                        <Ionicons name="time" size={16} color="#FFFFFF" />
+                        <Text className="text-sm text-white ml-2 shadow">
+                          Última limpeza: {displayLastCleanedTime(sala.ultima_limpeza_data_hora)}
+                          {sala.ultima_limpeza_funcionario && ` por ${sala.ultima_limpeza_funcionario}`}
+                        </Text>
                       </View>
-                    )}
 
+                    </View>
+                  </ImageBackground>
+
+                  {/* --- SEÇÃO DE DETALHES E AÇÕES --- */}
+                  <View className="p-4">
+
+                    {/* Seção de botões de ação */}
+                    <View className="border-t border-gray-200 p-1.5">
+                      {/* Botão para marcar a sala como limpa */}
+                      <TouchableOpacity
+                        className={`rounded-lg p-2 mt-2 ${sala.status_limpeza === "Limpa" ? "bg-azul_claro_senac" : "bg-azul_senac"}`}
+                        onPress={() => handleMarcarComoLimpa(sala)}
+                        disabled={sala.status_limpeza === "Limpa"}
+                      >
+                        <View className="flex-row items-center justify-center">
+                          {sala.status_limpeza === "Limpa" && (
+                            <Ionicons
+                              name="checkmark-circle"
+                              size={16}
+                              color="#d1d5db"
+                            />
+                          )}
+                          <Text
+                            className={`text-center font-semibold text-sm ${sala.status_limpeza === "Limpa" ? "text-gray-300" : "text-white"} ${sala.status_limpeza === "Limpa" ? "ml-1" : ""}`}
+                          >
+                            {sala.status_limpeza === "Limpa"
+                              ? "Limpa"
+                              : "Marcar como Limpa"}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+
+                      {/* Botões de administrador (visíveis apenas para superusuários) */}
+                      {user?.is_superuser && (
+                        <View className="flex-row mt-2 space-x-2 gap-2">
+                          {/* Botão de edição */}
+                          <TouchableOpacity
+                            className="bg-laranja_senac rounded-lg p-2 flex-1"
+                            onPress={() => handleEditSala(sala)}
+                          >
+                            <Text className="text-white text-center font-semibold text-xs">
+                              Editar
+                            </Text>
+                          </TouchableOpacity>
+
+                          {/* Botão de exclusão */}
+                          <TouchableOpacity
+                            className="bg-red-700 rounded-lg p-2 flex-1"
+                            onPress={() => handleDeleteSala(sala)}
+                          >
+                            <Text className="text-white text-center font-semibold text-xs">
+                              Excluir
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                    </View>
                   </View>
                 </View>
-              </View>
-
-            ))}
+              );
+            })}
           </ScrollView>
         )
         }
