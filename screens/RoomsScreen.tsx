@@ -85,6 +85,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   const [marcandoLimpa, setMarcandoLimpa] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSalaModal, setShowSalaModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Estado para a sala que está sendo editada ou excluída
   const [editingSala, setEditingSala] = useState<Sala | null>(null);
@@ -94,7 +95,9 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   const [formData, setFormData] = useState<CreateSalaData>({
     nome_numero: "",
     capacidade: 0,
+    validade_limpeza_horas: 0,
     descricao: "",
+    instrucoes: "",
     localizacao: "",
     ativa: true,
   });
@@ -171,12 +174,15 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   };
 
   // Lida com o clique no botão de edição de sala
+
   const handleEditSala = (sala: Sala) => {
     setEditingSala(sala);
     setFormData({
       nome_numero: sala.nome_numero,
       capacidade: sala.capacidade,
+      validade_limpeza_horas: sala.validade_limpeza_horas,
       descricao: sala.descricao,
+      instrucoes: sala.instrucoes,
       localizacao: sala.localizacao,
       ativa: sala.ativa,
     });
@@ -189,12 +195,18 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
     setFormData({
       nome_numero: "",
       capacidade: 0,
+      validade_limpeza_horas: 0,
       descricao: "",
+      instrucoes: "",
       localizacao: "",
       ativa: true,
     });
     setShowCreateModal(true);
   };
+
+  const ShowSalaModal = () => {
+    
+  }
 
   // Lida com o clique no botão de exclusão de sala
   const handleDeleteSala = (sala: Sala) => {
@@ -231,7 +243,9 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
       setFormData({
         nome_numero: "",
         capacidade: 0,
+        validade_limpeza_horas: 0,
         descricao: "",
+        instrucoes: "",
         localizacao: "",
         ativa: true,
       });
@@ -561,67 +575,98 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
               </Text>
 
               {/* Formulário de criação/edição */}
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Nome/Número da Sala:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Ex: Sala 101"
-                  value={formData.nome_numero}
-                  onChangeText={(text) =>
-                    setFormData({ ...formData, nome_numero: text })
-                  }
-                />
-              </View>
-
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Capacidade:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Ex: 30"
-                  value={formData.capacidade.toString()}
-                  onChangeText={(text) =>
-                    setFormData({
-                      ...formData,
-                      capacidade: parseInt(text) || 0,
-                    })
-                  }
-                  keyboardType="numeric"
-                />
-              </View>
-
-              <View className="mb-4">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Descrição:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Descrição da sala..."
-                  value={formData.descricao}
-                  onChangeText={(text) =>
-                    setFormData({ ...formData, descricao: text })
-                  }
-                  multiline
-                  numberOfLines={2}
-                />
-              </View>
-
-              <View className="mb-6">
-                <Text className="text-sm font-medium text-gray-700 mb-1">
-                  Localização:
-                </Text>
-                <TextInput
-                  className="border border-gray-300 rounded-lg p-3 text-base"
-                  placeholder="Ex: Bloco 1"
-                  value={formData.localizacao}
-                  onChangeText={(text) =>
-                    setFormData({ ...formData, localizacao: text })
-                  }
-                />
-              </View>
+              <ScrollView>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Nome/Número da Sala:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Ex: Sala 101"
+                    value={formData.nome_numero}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, nome_numero: text })
+                    }
+                  />
+                </View>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Capacidade:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Ex: 30"
+                    value={formData.capacidade.toString()}
+                    onChangeText={(text) =>
+                      setFormData({
+                        ...formData,
+                        capacidade: parseInt(text) || 0,
+                      })
+                    }
+                    keyboardType="numeric"
+                  />
+                </View>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Validade de limpeza:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Ex: 30"
+                    value={formData.validade_limpeza_horas.toString()}
+                    onChangeText={(text) =>
+                      setFormData({
+                        ...formData,
+                        validade_limpeza_horas: parseInt(text) || 0,
+                      })
+                    }
+                    keyboardType="numeric"
+                  />
+                </View>
+                <View className="mb-6">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Localização:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Ex: Bloco 1"
+                    value={formData.localizacao}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, localizacao: text })
+                    }
+                  />
+                </View>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Descrição:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Descrição da sala..."
+                    value={formData.descricao}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, descricao: text })
+                    }
+                    multiline
+                    numberOfLines={2}
+                  />
+                </View>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-gray-700 mb-1">
+                    Instrução de limpeza:
+                  </Text>
+                  <TextInput
+                    className="border border-gray-300 rounded-lg p-3 text-base"
+                    placeholder="Maneiras de limpar a sala..."
+                    value={formData.instrucoes}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, instrucoes: text })
+                    }
+                    multiline
+                    numberOfLines={2}
+                  />
+                </View>
+              </ScrollView>
 
               {/* Botões do modal de criação/edição */}
               <View className="flex-row justify-between">
@@ -634,7 +679,9 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                     setFormData({
                       nome_numero: "",
                       capacidade: 0,
+                      validade_limpeza_horas: 0,
                       descricao: "",
+                      instrucoes: "",
                       localizacao: "",
                       ativa: true,
                     });
