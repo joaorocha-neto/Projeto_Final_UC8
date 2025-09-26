@@ -8,6 +8,7 @@ import {
   Alert,
   TextInput,
   Modal,
+  Image,
   RefreshControl,
   Dimensions,
   ImageBackground,
@@ -37,6 +38,12 @@ type RoomsScreenNavigationProp = BottomTabNavigationProp<
 
 interface RoomsScreenProps {
   navigation: RoomsScreenNavigationProp;
+}
+
+interface ShowSalaModalProps {
+  visible: boolean;
+  sala: Sala | null;
+  onClose: () => void;
 }
 
 
@@ -85,7 +92,8 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   const [marcandoLimpa, setMarcandoLimpa] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showSalaModal, setShowSalaModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedSalaDetails, setSelectedSalaDetails] = useState<Sala | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Estado para a sala que está sendo editada ou excluída
   const [editingSala, setEditingSala] = useState<Sala | null>(null);
@@ -205,7 +213,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
   };
 
   const ShowSalaModal = () => {
-    
+
   }
 
   // Lida com o clique no botão de exclusão de sala
@@ -374,10 +382,24 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                         {sala.nome_numero}
                       </Text>
 
-                      <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100/90" : "bg-red-100/90"}`}>
-                        <Text className={`text-xs font-bold ${sala.status_limpeza === "Limpa" ? "text-green-900" : "text-red-900"}`}>
-                          {sala.status_limpeza}
-                        </Text>
+                      {/* Container para o Status e o novo Botão */}
+                      <View className="flex-row items-center">
+                        <View className={`px-2 py-1 rounded-md ${sala.status_limpeza === "Limpa" ? "bg-green-100/90" : "bg-red-100/90"}`}>
+                          <Text className={`text-xs font-bold ${sala.status_limpeza === "Limpa" ? "text-green-900" : "text-red-900"}`}>
+                            {sala.status_limpeza}
+                          </Text>
+                        </View>
+
+                        {/* BOTÃO PARA ABRIR O MODAL DE DETALHES */}
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSelectedSalaDetails(sala);
+                            setShowDetailsModal(true);
+                          }}
+                          className="ml-2 p-1"
+                        >
+                          <Ionicons name="eye-outline" size={26} color="#FFFFFF" />
+                        </TouchableOpacity>
                       </View>
                     </View>
 
@@ -568,7 +590,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
         >
           <View className="flex-1 justify-center items-center bg-black/50">
             <View
-              className={`bg-gray-200 rounded-xl w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"}`}
+              className={`bg-white rounded-xl w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"}`}
             >
               <Text className="text-xl font-bold text-gray-900 mb-4 text-center">
                 {editingSala ? "Editar Sala" : "Criar Nova Sala"}
@@ -720,7 +742,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
         >
           <View className="flex-1 justify-center items-center bg-black/50">
             <View
-              className={`bg-gray-200 rounded-lg w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"}`}
+              className={`bg-white rounded-xl w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"}`}
             >
               <Text className="text-xl font-bold text-red-700 mb-4 text-center">
                 Confirmar Exclusão
@@ -767,6 +789,110 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={showDetailsModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowDetailsModal(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-black/60 p-4">
+            {selectedSalaDetails && ( // Garante que a sala foi selecionada antes de renderizar
+              <View
+                className={`bg-white rounded-xl w-full p-6 ${isLarge ? "max-w-xl" : "max-w-sm"}`}
+              >
+                {/* Cabeçalho do Modal */}
+                <View className="flex-row mb-4">
+                  <Text className="text-2xl font-bold text-center justify-center text-azul_senac flex-1">
+                    {selectedSalaDetails.nome_numero}
+                  </Text>
+                </View>
+
+                <View className="mb-4">
+                  {(() => {
+                    const imageUri = getImageUrl(selectedSalaDetails.imagem);
+                    const finalImageUrl = imageUri || 'https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2FsYSUyMGRlJTIwYXVsYXxlbnwwfHwwfHx8MA%3D%3D';
+
+                    return (
+                      <Image
+                        source={{ uri: finalImageUrl }}
+                        className="h-48 w-full rounded-lg"
+                        resizeMode="cover"
+                      />
+                    );
+                  })()}
+                </View>
+
+                {/* Corpo com Detalhes da Sala */}
+                <ScrollView style={{ maxHeight: Dimensions.get("window").height * 0.6 }}>
+                  <View className="space-y-4">
+                    <View className="flex-row items-start">
+                      <Ionicons name="people-outline" size={20} color="#4B5563" className="mt-1" />
+                      <View className="ml-3 flex-1">
+                        <Text className="text-sm font-semibold text-gray-500">Capacidade</Text>
+                        <Text className="text-base text-gray-800">{selectedSalaDetails.capacidade} pessoas</Text>
+                      </View>
+                    </View>
+
+                    <View className="flex-row items-start">
+                      <Ionicons name="location-outline" size={20} color="#4B5563" className="mt-1" />
+                      <View className="ml-3 flex-1">
+                        <Text className="text-sm font-semibold text-gray-500">Localização</Text>
+                        <Text className="text-base text-gray-800">{selectedSalaDetails.localizacao}</Text>
+                      </View>
+                    </View>
+
+                    {selectedSalaDetails.descricao && (
+                      <View className="flex-row items-start">
+                        <Ionicons name="information-circle-outline" size={20} color="#4B5563" className="mt-1" />
+                        <View className="ml-3 flex-1">
+                          <Text className="text-sm font-semibold text-gray-500">Descrição</Text>
+                          <Text className="text-base text-gray-800">{selectedSalaDetails.descricao}</Text>
+                        </View>
+                      </View>
+                    )}
+
+                    {selectedSalaDetails.instrucoes && (
+                      <View className="flex-row items-start">
+                        <Ionicons name="document-text-outline" size={20} color="#4B5563" className="mt-1" />
+                        <View className="ml-3 flex-1">
+                          <Text className="text-sm font-semibold text-gray-500">Instruções</Text>
+                          <Text className="text-base text-gray-800">{selectedSalaDetails.instrucoes}</Text>
+                        </View>
+                      </View>
+                    )}
+
+                    <View className="flex-row items-start">
+                      <Ionicons name="time-outline" size={20} color="#4B5563" className="mt-1" />
+                      <View className="ml-3 flex-1">
+                        <Text className="text-sm font-semibold text-gray-500">Validade da Limpeza</Text>
+                        <Text className="text-base text-gray-800">{selectedSalaDetails.validade_limpeza_horas} horas</Text>
+                      </View>
+                    </View>
+
+                    <View className="flex-row items-start">
+                      <Ionicons name={selectedSalaDetails.ativa ? "checkmark-circle" : "close-circle"} size={20} color={selectedSalaDetails.ativa ? "#10B981" : "#EF4444"} className="mt-1" />
+                      <View className="ml-3 flex-1">
+                        <Text className="text-sm font-semibold text-gray-500">Status</Text>
+                        <Text className={`text-base font-bold ${selectedSalaDetails.ativa ? "text-green-600" : "text-red-600"}`}>
+                          {selectedSalaDetails.ativa ? 'Ativa' : 'Inativa'}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </ScrollView>
+
+                {/* Botão de Fechar */}
+                <TouchableOpacity
+                  className="bg-azul_senac rounded-lg p-3 mt-6"
+                  onPress={() => setShowDetailsModal(false)}
+                >
+                  <Text className="text-white text-center font-semibold">Fechar</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </Modal>
       </View >
